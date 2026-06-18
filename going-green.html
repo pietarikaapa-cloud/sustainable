@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Going Green — Studio Sustainability Field Tool</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* Soundstage / cine-HUD palette. Green is EARNED on the meter, never decorative. */
+    --stage:#14110f;        /* warm blacked-out stage */
+    --stage-2:#1c1815;      /* raised surface */
+    --stage-3:#262019;      /* card */
+    --line:#3a3128;         /* hairline / gaffer */
+    --tungsten:#ede6d8;     /* warm key-light text */
+    --dim:#a89a86;          /* meter labels */
+    --dimmer:#776b5b;
+    --key:#f2a65a;          /* warm key light = high impact / wasteful end */
+    --fill:#52b6c4;         /* cool daylight fill = info */
+    --green:#6fcf73;        /* sustainable end of the meter (earned) */
+    --green-deep:#3f9d52;
+    --rec:#e5563f;          /* REC dot */
+    --focus:#7fd4e0;
+    --radius:14px;
+    --mono:"Space Mono", ui-monospace, "SF Mono", "Cascadia Mono", Menlo, monospace;
+    --disp:"Space Grotesk", system-ui, "Segoe UI", Helvetica, Arial, sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{
+    background:var(--stage);
+    color:var(--tungsten);
+    font-family:var(--disp);
+    -webkit-font-smoothing:antialiased;
+    overflow:hidden;
+  }
+  button{font-family:inherit}
+  ::selection{background:var(--key);color:#1a1108}
+
+  /* ---------- Viewfinder frame ---------- */
+  #app{
+    position:fixed; inset:0;
+    display:flex; flex-direction:column;
+    padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  }
+  #camera{
+    position:fixed; inset:0; width:100%; height:100%;
+    object-fit:cover; z-index:0; opacity:0;
+    transition:opacity .5s ease;
+    transform:scaleX(1);
+  }
+  body.ar #camera{opacity:.55}
+  #scrim{
+    position:fixed; inset:0; z-index:1; pointer-events:none;
+    background:
+      radial-gradient(120% 90% at 50% 0%, transparent 30%, rgba(20,17,15,.55) 100%),
+      linear-gradient(rgba(20,17,15,.35), rgba(20,17,15,.35));
+  }
+  body.ar #scrim{background:radial-gradient(140% 100% at 50% 40%, transparent 35%, rgba(20,17,15,.75) 100%)}
+  /* viewfinder corner ticks */
+  .ticks{position:fixed; inset:14px; z-index:2; pointer-events:none}
+  .ticks span{position:absolute;width:22px;height:22px;border:2px solid rgba(237,230,216,.35)}
+  .ticks .tl{top:0;left:0;border-right:0;border-bottom:0}
+  .ticks .tr{top:0;right:0;border-left:0;border-bottom:0}
+  .ticks .bl{bottom:0;left:0;border-right:0;border-top:0}
+  .ticks .br{bottom:0;right:0;border-left:0;border-top:0}
+
+  .layer{position:relative; z-index:3; display:flex; flex-direction:column; height:100%; min-height:0}
+
+  /* ---------- Top status bar (camera HUD) ---------- */
+  .hud{
+    display:flex; align-items:center; gap:12px;
+    padding:14px 18px; font-family:var(--mono); font-size:12px;
+    letter-spacing:.04em; color:var(--dim);
+    border-bottom:1px solid var(--line);
+    background:linear-gradient(rgba(20,17,15,.85), rgba(20,17,15,.4));
+    backdrop-filter:blur(6px);
+  }
+  .rec{display:flex;align-items:center;gap:7px;color:var(--tungsten)}
+  .rec b{width:9px;height:9px;border-radius:50%;background:var(--rec);box-shadow:0 0 10px var(--rec);animation:blink 1.6s infinite}
+  @keyframes blink{0%,60%{opacity:1}80%,100%{opacity:.25}}
+  .hud .who{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--tungsten)}
+  .hud .prog{color:var(--green)}
+  .hud .tc{color:var(--dimmer)}
+
+  /* ---------- Scroll body ---------- */
+  .scroll{flex:1; min-height:0; overflow-y:auto; -webkit-overflow-scrolling:touch}
+  .wrap{max-width:780px; margin:0 auto; padding:22px 18px 130px}
+
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--key)}
+  h1{font-size:clamp(30px,7vw,46px);line-height:.98;margin:.35em 0 .25em;font-weight:700;letter-spacing:-.01em}
+  h2{font-size:22px;margin:.2em 0 .5em;font-weight:600;letter-spacing:-.01em}
+  p.lede{color:var(--dim);font-size:16px;line-height:1.55;max-width:56ch}
+  .small{font-size:13px;color:var(--dim);line-height:1.5}
+
+  /* ---------- Onboarding ---------- */
+  .brand{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+  .brand .meter-emblem{
+    font-family:var(--mono);font-size:12px;color:var(--green);
+    border:1px solid var(--green-deep);border-radius:999px;padding:5px 11px;letter-spacing:.12em;
+  }
+  .field{margin:16px 0}
+  label.lab{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin-bottom:7px}
+  input[type=text]{
+    width:100%;background:var(--stage-2);border:1px solid var(--line);color:var(--tungsten);
+    border-radius:10px;padding:13px 14px;font-size:16px;font-family:var(--disp);
+  }
+  input[type=text]:focus{outline:2px solid var(--focus);outline-offset:1px;border-color:transparent}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:430px){.row2{grid-template-columns:1fr}}
+
+  .btn{
+    appearance:none;border:1px solid var(--line);background:var(--stage-3);color:var(--tungsten);
+    border-radius:11px;padding:14px 18px;font-size:15px;font-weight:600;cursor:pointer;
+    display:inline-flex;align-items:center;justify-content:center;gap:9px;transition:transform .08s ease,border-color .2s,background .2s;
+  }
+  .btn:hover{border-color:var(--dimmer)}
+  .btn:active{transform:translateY(1px)}
+  .btn.primary{background:linear-gradient(180deg,#2e6f3e,#246034);border-color:#357a47;color:#eafff0}
+  .btn.primary:hover{background:linear-gradient(180deg,#357f47,#28683a)}
+  .btn.key{background:transparent;border-color:var(--key);color:var(--key)}
+  .btn.block{width:100%}
+  .btn:disabled{opacity:.4;cursor:not-allowed}
+  .btn:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+
+  /* ---------- Station hub ---------- */
+  .toolbar{display:flex;gap:10px;align-items:center;margin:6px 0 18px;flex-wrap:wrap}
+  .toggle{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+  .toggle button{background:transparent;border:0;color:var(--dim);padding:9px 16px;font-family:var(--mono);font-size:12px;letter-spacing:.08em;cursor:pointer}
+  .toggle button[aria-pressed=true]{background:var(--stage-3);color:var(--tungsten)}
+  .codejump{margin-left:auto;display:flex;gap:8px;align-items:center}
+  .codejump input{width:84px;text-align:center;font-family:var(--mono);background:var(--stage-2);border:1px solid var(--line);color:var(--tungsten);border-radius:9px;padding:9px}
+
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+  @media(max-width:560px){.grid{grid-template-columns:1fr}}
+
+  /* clapperboard-style station card */
+  .slate{
+    text-align:left;cursor:pointer;border:1px solid var(--line);border-radius:var(--radius);
+    background:var(--stage-3);padding:0;overflow:hidden;transition:border-color .2s,transform .08s;
+    display:flex;flex-direction:column;
+  }
+  .slate:hover{border-color:var(--dimmer)}
+  .slate:active{transform:translateY(1px)}
+  .slate .stripe{display:flex;height:14px}
+  .slate .stripe i{flex:1}
+  .slate .stripe i:nth-child(odd){background:#0c0a08}
+  .slate .stripe i:nth-child(even){background:#efe7d6}
+  .slate .body{padding:14px 15px 16px}
+  .slate .code{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--key)}
+  .slate h3{margin:6px 0 4px;font-size:17px;font-weight:600;letter-spacing:-.01em}
+  .slate .tag{font-size:12.5px;color:var(--dim);line-height:1.45}
+  .slate .foot{display:flex;align-items:center;gap:8px;margin-top:12px;font-family:var(--mono);font-size:11px;color:var(--dimmer)}
+  .chip{font-family:var(--mono);font-size:10px;letter-spacing:.1em;padding:3px 8px;border-radius:999px;border:1px solid var(--line)}
+  .chip.done{color:var(--green);border-color:var(--green-deep)}
+  .chip.todo{color:var(--dim)}
+
+  /* ---------- Station detail ---------- */
+  .back{background:none;border:0;color:var(--dim);font-family:var(--mono);font-size:12px;letter-spacing:.08em;cursor:pointer;padding:4px 0;margin-bottom:6px}
+  .panel{background:var(--stage-2);border:1px solid var(--line);border-radius:var(--radius);padding:16px 17px;margin:14px 0}
+  .panel h4{margin:0 0 7px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+  .panel p{margin:0;color:var(--tungsten);line-height:1.55;font-size:15px}
+  .panel.impact{border-left:3px solid var(--key)}
+  .panel.lever{border-left:3px solid var(--green-deep)}
+
+  .q{margin:22px 0}
+  .q .qn{font-family:var(--mono);font-size:11px;color:var(--key);letter-spacing:.12em}
+  .q .qt{font-size:16px;font-weight:600;margin:6px 0 12px;line-height:1.4}
+  .opt{
+    display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;cursor:pointer;
+    background:var(--stage-2);border:1px solid var(--line);border-radius:11px;padding:13px 14px;margin-bottom:9px;color:var(--tungsten);
+    transition:border-color .15s,background .15s;
+  }
+  .opt:hover{border-color:var(--dimmer)}
+  .opt .mk{flex:none;width:20px;height:20px;border-radius:50%;border:2px solid var(--dimmer);margin-top:1px;display:grid;place-items:center;font-size:11px;color:var(--stage)}
+  .opt[aria-pressed=true]{border-color:var(--green-deep);background:rgba(63,157,82,.1)}
+  .opt[aria-pressed=true] .mk{background:var(--green);border-color:var(--green)}
+  .opt[aria-pressed=true] .mk::after{content:"✓"}
+  .opt .ot{font-size:14.5px;line-height:1.4}
+  .opt .note{display:block;font-size:12.5px;color:var(--dim);margin-top:3px}
+
+  textarea{
+    width:100%;min-height:90px;resize:vertical;background:var(--stage-2);border:1px solid var(--line);
+    color:var(--tungsten);border-radius:11px;padding:13px 14px;font-size:15px;font-family:var(--disp);line-height:1.5;
+  }
+  textarea:focus{outline:2px solid var(--focus);outline-offset:1px;border-color:transparent}
+
+  /* ---------- Impact meter (the signature) ---------- */
+  .meter{margin:20px 0 4px}
+  .meter .scale{position:relative;height:14px;border-radius:999px;overflow:hidden;border:1px solid var(--line);
+    background:linear-gradient(90deg,var(--key),#d9c25a 45%,var(--green) 100%)}
+  .meter .needle{position:absolute;top:-6px;width:3px;height:26px;background:var(--tungsten);border-radius:2px;
+    box-shadow:0 0 0 2px var(--stage);transition:left .5s cubic-bezier(.2,.8,.2,1)}
+  .meter .ends{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:var(--dim);margin-top:9px}
+  .meter .read{font-family:var(--mono);font-size:13px;color:var(--tungsten);margin-top:10px;display:flex;justify-content:space-between}
+  .meter .read b{color:var(--green);font-weight:700}
+  input[type=range]{-webkit-appearance:none;width:100%;height:6px;border-radius:999px;background:var(--line);margin:18px 0 6px;outline:none}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:var(--green);border:3px solid var(--stage);cursor:pointer}
+  input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--green);border:3px solid var(--stage);cursor:pointer}
+
+  /* ---------- Bottom action bar ---------- */
+  .dock{
+    position:absolute;left:0;right:0;bottom:0;z-index:5;
+    padding:13px 16px calc(13px + env(safe-area-inset-bottom));
+    background:linear-gradient(rgba(20,17,15,.2),rgba(20,17,15,.96) 40%);
+    border-top:1px solid var(--line);backdrop-filter:blur(8px);
+    display:flex;gap:11px;align-items:center;
+  }
+  .dock .grow{flex:1}
+
+  /* ---------- Summary ---------- */
+  .bigscore{display:flex;align-items:baseline;gap:14px;margin:10px 0 4px}
+  .bigscore .n{font-family:var(--mono);font-size:64px;font-weight:700;line-height:1;color:var(--green)}
+  .bigscore .d{color:var(--dim);font-family:var(--mono);font-size:14px}
+  .ledger{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;margin:16px 0}
+  .ledger .lr{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 15px;border-bottom:1px solid var(--line);font-size:14px}
+  .ledger .lr:last-child{border-bottom:0}
+  .ledger .lr .nm{color:var(--tungsten)}
+  .ledger .lr .vv{font-family:var(--mono);font-size:12px;color:var(--green)}
+  .ledger .lr .vv.miss{color:var(--dimmer)}
+
+  .toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateY(20px);z-index:30;
+    background:var(--stage-3);border:1px solid var(--green-deep);color:var(--tungsten);padding:12px 18px;border-radius:11px;
+    font-size:14px;opacity:0;pointer-events:none;transition:.3s;max-width:90vw;text-align:center}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .toast.err{border-color:var(--key)}
+
+  details.setup{margin-top:20px;border:1px dashed var(--line);border-radius:11px;padding:0 14px}
+  details.setup summary{cursor:pointer;padding:13px 0;font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--dim)}
+  details.setup code{background:#0c0a08;padding:1px 6px;border-radius:5px;font-size:12px;color:var(--green)}
+  details.setup p{font-size:13px;color:var(--dim);line-height:1.6}
+
+  /* ---------- Location Shoot game ---------- */
+  .gamehero{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:
+     linear-gradient(180deg, rgba(82,182,196,.14), rgba(20,17,15,.2)), var(--stage-2);padding:20px 18px;margin:8px 0 16px}
+  .gamehero .premise{font-size:15px;color:var(--tungsten);line-height:1.55}
+  .marker-rail{display:flex;gap:6px;margin:14px 0 2px}
+  .marker-rail i{flex:1;height:6px;border-radius:99px;background:var(--line)}
+  .marker-rail i.on{background:var(--green)}
+  .marker-rail i.cur{background:var(--key)}
+  .vs{display:grid;gap:12px;margin:14px 0}
+  .vbar{background:var(--stage-2);border:1px solid var(--line);border-radius:11px;padding:12px 13px}
+  .vbar .top{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--dim);margin-bottom:8px}
+  .vbar .top b{color:var(--tungsten)}
+  .vbar .track{position:relative;height:16px;border-radius:99px;background:#0c0a08;overflow:hidden}
+  .vbar .barfill{height:100%;border-radius:99px;transition:width .55s cubic-bezier(.2,.8,.2,1)}
+  .vbar.loc .barfill{background:linear-gradient(90deg,var(--green),#d9c25a 55%,var(--key))}
+  .vbar.vp .barfill{background:var(--fill)}
+  .vbar .vpline{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--tungsten);opacity:.8}
+  .pts{font-family:var(--mono);font-size:13px;color:var(--green)}
+  .feedback{margin-top:6px;padding:11px 13px;border-radius:10px;background:rgba(63,157,82,.1);border:1px solid var(--green-deep);font-size:13.5px;line-height:1.45;color:var(--tungsten)}
+  .feedback .p{font-family:var(--mono);color:var(--green);font-weight:700;margin-right:6px}
+  .opt .pe{flex:none;font-family:var(--mono);font-size:11px;color:var(--dim);align-self:center}
+  .verdict{font-size:15px;line-height:1.55;color:var(--tungsten);margin:6px 0}
+  .kicker{border-left:3px solid var(--fill);background:var(--stage-2);border:1px solid var(--line);border-left-width:3px;border-radius:11px;padding:14px 15px;margin:14px 0;font-size:14px;line-height:1.55;color:var(--dim)}
+  .hide{display:none !important}
+  @media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
+</style>
+</head>
+<body>
+<video id="camera" playsinline muted autoplay></video>
+<div id="scrim"></div>
+<div class="ticks"><span class="tl"></span><span class="tr"></span><span class="bl"></span><span class="br"></span></div>
+
+<div id="app">
+  <div class="layer">
+    <div class="hud" id="hud">
+      <span class="rec"><b></b>REC</span>
+      <span class="who" id="hudWho">— not signed in —</span>
+      <span class="prog" id="hudProg">0/8</span>
+      <span class="tc" id="hudTc">00:00</span>
+    </div>
+    <div class="scroll"><div class="wrap" id="screen"></div></div>
+    <div class="dock hide" id="dock"></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* =====================================================================
+   GOING GREEN — studio sustainability field tool
+   Self-contained. No build step. Works in any modern browser.
+   ===================================================================== */
+
+/* ---- 1. TEACHER CONFIG ------------------------------------------------
+   Paste the Google Apps Script Web App URL below to collect every
+   student's results into one central Google Sheet. Leave blank to run
+   the app in offline mode (students export their own CSV/JSON).        */
+const GOOGLE_ENDPOINT = "https://script.google.com/macros/s/AKfycbws9B3W5z2d1EA0nlH1bvfv1I58WPa79SL55nA_SnqEDegrhRVvE1VIWjlRWhA1d7J9/exec";
+/* --------------------------------------------------------------------- */
+
+/* ---- 2. STATION CONTENT ---------------------------------------------
+   Each station = one media-production technique. Interventions carry a
+   weight (0=wasteful .. 100=sustainable) so the meter rewards reasoning,
+   not naive "AI everywhere". Strong answers acknowledge trade-offs.    */
+const STATIONS = [
+  {
+    id:1, code:"SET-01 / LIGHTING", name:"Lighting & power draw",
+    tag:"Tungsten and HMI heat the room and the meter.",
+    what:"A traditional key + fill + back-light setup in tungsten or HMI can pull 10–20kW for a single interview. Most of that energy becomes heat, which then drives air-conditioning load on top.",
+    lever:"LED fixtures draw a fraction of the power and run cool. AI here is logistical, not generative: scheduling software can batch scenes by setup to cut re-lights, and smart metering flags fixtures left burning between takes.",
+    q1:{ t:"What's the dominant sustainability impact at the lighting station?", opts:[
+      {l:"Electricity demand — and the cooling load the heat creates", w:100, note:"Correct: energy is the headline, and heat doubles it via HVAC."},
+      {l:"Plastic gel waste", w:35, note:"Real but minor next to power and cooling."},
+      {l:"Noise pollution", w:10, note:"Not a material carbon impact."} ]},
+    q2:{ t:"Pick the strongest intervention.", opts:[
+      {l:"Switch to LED fixtures and meter usage between takes", w:100, note:"Biggest, lowest-regret cut."},
+      {l:"AI-batch the shoot order so each setup is lit once", w:80, note:"Good logistical AI use; complements LED."},
+      {l:"Keep tungsten but buy carbon offsets", w:25, note:"Offsets don't reduce the actual draw."} ]},
+    est:{ label:"Estimate the energy cut from tungsten→LED for this setup", from:"0%", to:"~80%", default:55 }
+  },
+  {
+    id:2, code:"SET-02 / VIRTUAL PRODUCTION", name:"Virtual production & chroma",
+    tag:"The LED volume vs flying a crew to a location.",
+    what:"An LED volume or green-screen stage replaces location travel and physically-built environments. It is power-hungry itself, but it removes flights, freight, per-diems and set strike for many shoots.",
+    lever:"Generative and game-engine tools build the virtual environment instead of constructing and trucking a physical one. The win is real only when it displaces travel and material — running a volume for a shot you could have done in a room is a net loss.",
+    q1:{ t:"Where does virtual production actually save carbon?", opts:[
+      {l:"By displacing location travel, freight and physical set builds", w:100, note:"Exactly — the saving is in what it replaces."},
+      {l:"By using less electricity than any other method", w:20, note:"No — a volume is power-intensive on its own."},
+      {l:"By removing the need for any crew", w:10, note:"Crews are still required."} ]},
+    q2:{ t:"When is virtual production the sustainable choice?", opts:[
+      {l:"When it removes long-haul travel and a built-and-struck set", w:100, note:"Displacement is the test."},
+      {l:"Always — it's digital, so it's clean", w:25, note:"Digital still draws power; check what it replaces."},
+      {l:"Only for science-fiction projects", w:40, note:"Genre isn't the deciding factor."} ]},
+    est:{ label:"Share of this production's travel + freight you'd avoid", from:"0%", to:"~70%", default:45 }
+  },
+  {
+    id:3, code:"SET-03 / ART DEPARTMENT", name:"Set build & materials",
+    tag:"Built, dressed, shot for a day, skipped.",
+    what:"Physical sets consume timber, paint, polystyrene and steel, much of it single-use and landfilled at strike. The art department is one of the highest material-waste areas on a production.",
+    lever:"AI previs and 3D models let teams test a set before cutting any material, so only what's needed is built. Combined with a reuse/hire-back store and modular flats, generative previs reduces speculative builds.",
+    q1:{ t:"What drives the art department's footprint?", opts:[
+      {l:"Single-use materials built, then sent to landfill at strike", w:100, note:"Waste at strike is the core problem."},
+      {l:"The cost of paint", w:30, note:"Cost ≠ carbon; reuse matters more."},
+      {l:"Designers' travel", w:20, note:"Minor compared with material waste."} ]},
+    q2:{ t:"Best lever to cut material waste?", opts:[
+      {l:"AI previs to build only what's confirmed, then hire-back/reuse flats", w:100, note:"Avoids speculative builds and landfill."},
+      {l:"Build everything but recycle the timber", w:55, note:"Better than nothing; avoidance beats recycling."},
+      {l:"Use AI to design more elaborate sets", w:15, note:"More build = more impact, not less."} ]},
+    est:{ label:"Speculative build you'd avoid with previs + reuse", from:"0%", to:"~60%", default:40 }
+  },
+  {
+    id:4, code:"SET-04 / LOGISTICS", name:"Transport & call sheets",
+    tag:"Crew, kit and talent moving across the map.",
+    what:"Travel is consistently the single largest line in a production's carbon footprint — unit moves, crew commutes, freight and talent flights. Idling vehicles and scattered locations multiply it.",
+    lever:"This is the clearest win for non-generative AI: route- and load-optimisation, consolidated call sheets, ride-share matching and location clustering. The tool plans fewer, fuller journeys.",
+    q1:{ t:"Which is typically the biggest single source of a shoot's emissions?", opts:[
+      {l:"Transport — unit moves, commutes, freight and flights", w:100, note:"Travel usually tops the footprint."},
+      {l:"On-set catering", w:30, note:"Material but rarely the largest."},
+      {l:"Office electricity", w:15, note:"Small in comparison."} ]},
+    q2:{ t:"Best use of AI here?", opts:[
+      {l:"Route/load optimisation + consolidated call sheets to cut journeys", w:100, note:"Fewer, fuller trips — direct cut."},
+      {l:"Generate AI images of the locations instead of scouting", w:45, note:"Helps scouting, but doesn't move production day."},
+      {l:"Book extra vehicles so nobody waits", w:10, note:"Adds emissions." } ]},
+    est:{ label:"Reduction in vehicle-trips from clustering + optimisation", from:"0%", to:"~50%", default:35 }
+  },
+  {
+    id:5, code:"SET-05 / POWER", name:"Generators vs grid & battery",
+    tag:"Where the soundstage actually gets its watts.",
+    what:"Off-grid shoots lean on diesel generators that run near-continuously and often well below efficient load. On-set, that's a major fuel burn and local air-quality issue.",
+    lever:"Grid tie-ins, battery hybrids and HVO biofuel cut or replace diesel. AI/IoT monitoring matches generator size to real-time load so units aren't oversized and idling.",
+    q1:{ t:"What's wrong with the default generator approach?", opts:[
+      {l:"Diesel runs continuously, often oversized and below efficient load", w:100, note:"Idling + oversizing wastes fuel and fouls air."},
+      {l:"Generators are too quiet to notice", w:10, note:"Not the issue."},
+      {l:"They take up parking", w:15, note:"Logistical, not the carbon point."} ]},
+    q2:{ t:"Strongest power strategy?", opts:[
+      {l:"Grid tie-in or battery hybrid, with load monitoring to right-size", w:100, note:"Replace/shrink the burn, then optimise it."},
+      {l:"Keep diesel but monitor it with AI", w:60, note:"Monitoring helps; fuel switch helps more."},
+      {l:"Add a second generator for redundancy", w:10, note:"Doubles the problem."} ]},
+    est:{ label:"Diesel you'd displace with hybrid + grid + monitoring", from:"0%", to:"~75%", default:50 }
+  },
+  {
+    id:6, code:"SET-06 / CATERING", name:"Catering & set waste",
+    tag:"Feeding the unit without feeding landfill.",
+    what:"Productions over-cater to be safe, generating significant food waste, plus single-use packaging, plastic bottles and disposable coffee cups across a shoot day.",
+    lever:"AI demand-forecasting from headcounts and call times reduces over-ordering. Plant-forward menus, refill stations and compostable service close the rest of the gap.",
+    q1:{ t:"What's the main impact of catering?", opts:[
+      {l:"Over-ordering food waste plus single-use packaging", w:100, note:"Waste + packaging is the pairing to target."},
+      {l:"The kitchen's electricity", w:30, note:"Minor next to waste."},
+      {l:"Reusable plates", w:10, note:"Reusables are the solution, not the impact."} ]},
+    q2:{ t:"Best combined intervention?", opts:[
+      {l:"AI-forecast headcount to right-size orders + plant-forward + refill stations", w:100, note:"Cuts waste at source and packaging."},
+      {l:"Order extra so there's always plenty", w:10, note:"Maximises waste."},
+      {l:"Switch only the cups to compostable", w:45, note:"Helps, but ignores food waste." } ]},
+    est:{ label:"Food + packaging waste avoided with forecasting + refills", from:"0%", to:"~55%", default:40 }
+  },
+  {
+    id:7, code:"SET-07 / POST & DATA", name:"Post-production & storage",
+    tag:"The footprint that lives in the render farm.",
+    what:"Editing, VFX, rendering and long-term media storage consume real electricity in data centres. Duplicated rushes, redundant backups and idle render nodes quietly accumulate impact after the shoot wraps.",
+    lever:"AI-assisted editing, smart transcoding and automated culling reduce render and storage load — but compute has its own footprint, so the gain depends on choosing a low-carbon cloud region and deleting what you don't need.",
+    q1:{ t:"Where does post-production's footprint hide?", opts:[
+      {l:"Render-farm energy and redundant long-term storage", w:100, note:"Compute + duplicated storage is the hidden cost."},
+      {l:"The editor's desk lamp", w:10, note:"Negligible."},
+      {l:"Printing call sheets", w:20, note:"Tiny by comparison."} ]},
+    q2:{ t:"How should AI be used in post?", opts:[
+      {l:"AI culling + smart transcoding on a low-carbon cloud region, then delete dupes", w:100, note:"Cuts load and is honest about compute cost."},
+      {l:"Render everything at maximum quality 'just in case'", w:15, note:"Wastes compute and storage."},
+      {l:"Keep every version forever on local drives", w:25, note:"Redundant storage adds up."} ]},
+    est:{ label:"Render + storage load cut by culling and region choice", from:"0%", to:"~45%", default:30 }
+  },
+  {
+    id:8, code:"SET-08 / GENERATIVE AI", name:"Generative content — with caveats",
+    tag:"Synthesising shots instead of shooting them.",
+    what:"Generative AI can produce b-roll, backgrounds, voice or concept assets in place of physically shooting them — potentially removing travel, build and crew days. But each model has its own energy and water footprint, plus rights and authenticity questions.",
+    lever:"The sustainable use is targeted: replace the highest-footprint shots (a flown-in establishing aerial, a built environment) with synthesis, while accounting for the compute used and being transparent about it. Generating everything indiscriminately can cost more than it saves.",
+    q1:{ t:"What's the honest sustainability case for generative AI?", opts:[
+      {l:"It can displace high-footprint shoots, but its own compute must be counted", w:100, note:"Net saving only when displacement > compute cost."},
+      {l:"It's free of any environmental cost because it's software", w:10, note:"Models consume energy and water."},
+      {l:"It always beats shooting on every metric", w:25, note:"Only for genuinely high-footprint shots."} ]},
+    q2:{ t:"Most defensible way to deploy it?", opts:[
+      {l:"Target the highest-footprint shots, account for compute, disclose use", w:100, note:"Targeted + transparent + accounted."},
+      {l:"Generate every asset to avoid all filming", w:30, note:"Indiscriminate use can erase the saving."},
+      {l:"Use it only to make more content faster", w:20, note:"Volume isn't the sustainability goal." } ]},
+    est:{ label:"Shoot footprint displaced by targeting only high-impact shots", from:"0%", to:"~50%", default:35 }
+  }
+];
+
+/* ---- 2b. LOCATION SHOOT GAME ----------------------------------------
+   A 10-marker walk-through of taking a Love-Island-style reality format
+   to a remote island. At each marker the student picks a production
+   decision scored 1–5 (5 = lowest impact). Perfect minimisation = 50.
+   Each option carries an indicative impact value (teaching units, NOT
+   audited tCO2e). The running location footprint is compared live with
+   the virtual-production studio baseline. VP_BASELINE is the studio's
+   own footprint: real power draw, minimal travel, no location/diesel.  */
+const VP_BASELINE = 22; // indicative units — the LED-volume equivalent
+const LOCATION_GAME = {
+  title:"Sun & Sand Villa",
+  premise:"Your reality format wants twelve singles on a remote tropical island for six weeks. Walk the production from greenlight to transmission. At each of the ten markers, pick how you'll do it. Greener decisions score more — minimise every one and you hit 50 / 50. Watch your location footprint against what the same show would cost in the virtual-production studio.",
+  markers:[
+    { code:"M01", title:"Location & recce", q:"How do you find and lock the island?",
+      opts:[
+        {l:"Fly several scouting trips to shortlisted islands", p:1, impact:8,  why:"Recce flights are pure overhead before a frame is shot."},
+        {l:"One scout trip, then confirm remotely", p:3, impact:3,  why:"Cuts most recce travel without going fully virtual."},
+        {l:"Virtual recce from existing footage and 3D survey", p:5, impact:1,  why:"Near-zero footprint — the VP mindset starts at planning."} ]},
+    { code:"M02", title:"Cast & crew travel", q:"How do people get to set? (Usually the biggest line.)",
+      opts:[
+        {l:"Long-haul flights for a full 120-person unit", p:1, impact:40, why:"Travel is almost always the largest single source."},
+        {l:"Trim the unit, fly core only, rail where possible", p:3, impact:18, why:"Fewer bodies + smarter modes cut the dominant line."},
+        {l:"Shoot near base — crew travel locally, no flights", p:5, impact:4,  why:"Removing flights is the single biggest lever there is."} ]},
+    { code:"M03", title:"Kit transport", q:"How does the camera, sound and rigging gear arrive?",
+      opts:[
+        {l:"Air-freight everything to hit the schedule", p:1, impact:20, why:"Air-freight is the most carbon-intensive way to move kit."},
+        {l:"Sea-freight non-urgent kit, hire the rest locally", p:3, impact:8,  why:"Slower planning, far lower freight impact."},
+        {l:"Use the stage's resident kit — almost nothing ships", p:5, impact:2,  why:"Local/stage kit erases the freight line."} ]},
+    { code:"M04", title:"Power", q:"Where do the watts come from on a remote island?",
+      opts:[
+        {l:"Diesel generators running 24/7", p:1, impact:25, why:"Oversized diesel idling is a major burn and air-quality hit."},
+        {l:"Battery hybrid + HVO biofuel, load-managed", p:3, impact:10, why:"Cuts and cleans the burn, but still off-grid."},
+        {l:"Grid tie-in / stage mains", p:5, impact:3,  why:"Connecting to clean(er) grid power beats any generator."} ]},
+    { code:"M05", title:"The villa / set", q:"How do you create the iconic villa?",
+      opts:[
+        {l:"Build a full villa structure on the island", p:1, impact:15, why:"New build = materials, freight and strike waste."},
+        {l:"Dress an existing building, minimal new build", p:3, impact:6,  why:"Reuse avoids most of the material footprint."},
+        {l:"Recreate the villa as a virtual set on the LED volume", p:5, impact:2,  why:"The look without the build — core virtual production."} ]},
+    { code:"M06", title:"Accommodation", q:"Where do cast and crew stay for six weeks?",
+      opts:[
+        {l:"Sprawling resort, full occupancy for the run", p:1, impact:12, why:"Weeks of resort energy and water add up fast."},
+        {l:"Efficient local lodging, shared transport", p:3, impact:5,  why:"Right-sized stay cuts the standing footprint."},
+        {l:"Shoot near base — most crew sleep at home", p:5, impact:2,  why:"No production accommodation at all is the floor."} ]},
+    { code:"M07", title:"Catering", q:"How do you feed the unit every day?",
+      opts:[
+        {l:"Fly in caterers and over-order to be safe", p:1, impact:8, why:"Imported food + over-catering is waste on waste."},
+        {l:"Local, plant-forward menu, AI-forecast headcount", p:3, impact:4, why:"Forecasting right-sizes orders and cuts waste."},
+        {l:"Base canteen — minimal extra catering footprint", p:5, impact:1, why:"Using existing facilities is hard to beat."} ]},
+    { code:"M08", title:"Water & ecosystem", q:"What's your footprint on the island itself?",
+      opts:[
+        {l:"Heavy water use, build into a sensitive shoreline", p:1, impact:6, why:"Local ecosystem damage isn't on the carbon ledger but it's real."},
+        {l:"Managed water + leave-no-trace site rules", p:3, impact:3, why:"Limits the on-site damage you do cause."},
+        {l:"No location footprint — it's a stage", p:5, impact:1, why:"You can't disturb an ecosystem you never visit."} ]},
+    { code:"M09", title:"Lighting the 'sun'", q:"How do you light for that golden-hour look?",
+      opts:[
+        {l:"Big HMI rigs to fake sun, plus AC to fight the heat", p:1, impact:10, why:"Hot fixtures drive cooling load on top of the draw."},
+        {l:"LED fixtures topped up with natural light", p:3, impact:4, why:"Cool, efficient lighting cuts power and cooling."},
+        {l:"Controlled LED-volume lighting, no AC battle", p:5, impact:2, why:"The volume gives repeatable light at low draw."} ]},
+    { code:"M10", title:"Post & transmission", q:"How do rushes become a broadcast episode?",
+      opts:[
+        {l:"Ship duplicate drives, edit on the island, archive everything", p:1, impact:6, why:"Shipping + duplication + endless storage all cost energy."},
+        {l:"Upload to a low-carbon cloud region, cull duplicates", p:3, impact:3, why:"Right region + housekeeping shrinks the data footprint."},
+        {l:"Edit at base off the stage feed — minimal data movement", p:5, impact:1, why:"Keeping post close to source avoids most of it."} ]}
+  ]
+};
+const LOC_MAX = LOCATION_GAME.markers.reduce((a,m)=>a+Math.max(...m.opts.map(o=>o.impact)),0);
+
+/* ---- 3. STATE & STORAGE (localStorage with safe in-memory fallback) -- */
+const KEY="goinggreen.v1";
+let mem={};
+const store={
+  get(){ try{ const r=localStorage.getItem(KEY); return r?JSON.parse(r):null; }catch(e){ return mem[KEY]||null; } },
+  set(v){ try{ localStorage.setItem(KEY, JSON.stringify(v)); }catch(e){ mem[KEY]=v; } }
+};
+let S = store.get() || { student:null, started:null, answers:{}, view:"list", route:"onboard", current:null, game:null };
+function save(){ store.set(S); }
+
+/* ---- 4. small helpers ------------------------------------------------ */
+const $ = (s,r=document)=>r.querySelector(s);
+const screen=$("#screen"), dock=$("#dock");
+const esc=s=>(s==null?"":String(s)).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function toast(msg,err){ const t=$("#toast"); t.textContent=msg; t.className="toast show"+(err?" err":""); setTimeout(()=>t.className="toast",2600); }
+function done(id){ const a=S.answers[id]; return a && a.q1!=null && a.q2!=null; }
+function completedCount(){ return STATIONS.filter(s=>done(s.id)).length; }
+
+/* station sustainability score 0..100 from the two choices + slider */
+function stationScore(id){
+  const a=S.answers[id]; if(!a||a.q1==null||a.q2==null) return null;
+  const st=STATIONS.find(s=>s.id===id);
+  const w1=st.q1.opts[a.q1].w, w2=st.q2.opts[a.q2].w;
+  return Math.round(w1*0.4 + w2*0.6); // the intervention choice weighs most
+}
+
+/* ---- 5. timecode ----------------------------------------------------- */
+function tc(){
+  if(!S.started){ $("#hudTc").textContent="00:00"; return; }
+  const s=Math.floor((Date.now()-S.started)/1000);
+  $("#hudTc").textContent=String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");
+}
+setInterval(tc,1000);
+
+/* ---- 6. camera / AR view -------------------------------------------- */
+let stream=null;
+async function startAR(){
+  try{
+    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:"environment"}},audio:false});
+    $("#camera").srcObject=stream; document.body.classList.add("ar"); return true;
+  }catch(e){ document.body.classList.remove("ar"); return false; }
+}
+function stopAR(){ if(stream){ stream.getTracks().forEach(t=>t.stop()); stream=null; } document.body.classList.remove("ar"); }
+
+/* ---- 7. HUD ---------------------------------------------------------- */
+function syncHud(){
+  $("#hudWho").textContent = S.student ? (S.student.name+(S.student.group?" · "+S.student.group:"")) : "— not signed in —";
+  $("#hudProg").textContent = completedCount()+"/"+STATIONS.length;
+}
+
+/* ---- 8. ROUTING ------------------------------------------------------ */
+function go(route, opt){
+  S.route=route; if(opt!=null) S.current=opt; save();
+  if(route!=="station"||S.view!=="ar") { if(route!=="station") {} }
+  render();
+}
+function render(){
+  syncHud();
+  if(S.route==="onboard"){ stopAR(); renderOnboard(); }
+  else if(S.route==="hub"){ S.view==="ar"?startAR():stopAR(); renderHub(); }
+  else if(S.route==="station"){ S.view==="ar"?startAR():stopAR(); renderStation(S.current); }
+  else if(S.route==="game"){ stopAR(); renderGame(); }
+  else if(S.route==="summary"){ stopAR(); renderSummary(); }
+}
+
+/* ---- 9. SCREENS ------------------------------------------------------ */
+function renderOnboard(){
+  dock.classList.add("hide");
+  const st=S.student||{};
+  screen.innerHTML=`
+    <div class="brand">
+      <span class="eyebrow">Studio sustainability field tool</span>
+      <span class="meter-emblem">● LIVE METER</span>
+    </div>
+    <h1>Going&nbsp;Green</h1>
+    <p class="lede">Walk the studio. At each station you'll see where carbon, energy and waste hide in a real production — and decide how to address it, including where AI helps and where it doesn't. Your meter swings toward green as you make stronger calls.</p>
+    <div class="panel" style="margin-top:22px">
+      <h4>Sign in to start your walk</h4>
+      <div class="field">
+        <label class="lab" for="nm">Your name</label>
+        <input id="nm" type="text" autocomplete="name" placeholder="e.g. Alex Chan" value="${esc(st.name||"")}">
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label class="lab" for="sid">Student ID</label>
+          <input id="sid" type="text" placeholder="e.g. u2401234" value="${esc(st.id||"")}">
+        </div>
+        <div class="field">
+          <label class="lab" for="grp">Group / module</label>
+          <input id="grp" type="text" placeholder="e.g. MA Media B" value="${esc(st.group||"")}">
+        </div>
+      </div>
+      <button class="btn primary block" id="startBtn">Start the studio walk →</button>
+      <p class="small" style="margin-top:12px">${GOOGLE_ENDPOINT?"Results submit to your class's central sheet at the end.":"Offline mode — you'll export your own results file at the end."}</p>
+    </div>
+    ${setupBlock()}
+  `;
+  $("#startBtn").onclick=()=>{
+    const name=$("#nm").value.trim();
+    if(!name){ toast("Add your name to start",true); $("#nm").focus(); return; }
+    S.student={ name, id:$("#sid").value.trim(), group:$("#grp").value.trim() };
+    if(!S.started) S.started=Date.now();
+    S.route="hub"; save(); render();
+  };
+}
+
+function renderHub(){
+  dock.classList.add("hide");
+  const cards=STATIONS.map(s=>{
+    const d=done(s.id), sc=stationScore(s.id);
+    return `<button class="slate" data-st="${s.id}">
+      <div class="stripe">${"<i></i>".repeat(12)}</div>
+      <div class="body">
+        <div class="code">${esc(s.code)}</div>
+        <h3>${esc(s.name)}</h3>
+        <div class="tag">${esc(s.tag)}</div>
+        <div class="foot">
+          ${d?`<span class="chip done">DONE · ${sc}/100</span>`:`<span class="chip todo">TASK OPEN</span>`}
+        </div>
+      </div>
+    </button>`;
+  }).join("");
+  screen.innerHTML=`
+    <span class="eyebrow">${esc(S.student.name)} · station select</span>
+    <h2 style="margin-top:8px">Choose a station</h2>
+    <div class="toolbar">
+      <div class="toggle" role="group" aria-label="View mode">
+        <button id="vList" aria-pressed="${S.view!=="ar"}">LIST</button>
+        <button id="vAr" aria-pressed="${S.view==="ar"}">AR CAMERA</button>
+      </div>
+      <div class="codejump">
+        <input id="codeIn" type="text" inputmode="numeric" placeholder="No." aria-label="Station number">
+        <button class="btn" id="codeGo">Go</button>
+      </div>
+    </div>
+    <p class="small" style="margin:-6px 0 16px">${S.view==="ar"
+      ? "Point your device at a station marker. Tap a card to open its task. (Camera unavailable on some desktops — LIST works everywhere.)"
+      : "Tap a station, or type the number printed on its QR marker in the studio."}</p>
+    <div class="grid">${cards}</div>
+    <button class="btn primary block" id="toSummary" style="margin-top:20px">Review & submit results (${completedCount()}/${STATIONS.length})</button>
+  `;
+  $("#vList").onclick=()=>{ S.view="list"; save(); render(); };
+  $("#vAr").onclick=async()=>{ S.view="ar"; save(); const ok=await startAR(); if(!ok) toast("Camera unavailable — using list view",true); render(); };
+  screen.querySelectorAll(".slate").forEach(b=> b.onclick=()=>{ S.route="station"; S.current=+b.dataset.st; save(); render(); });
+  const jump=()=>{ const n=+$("#codeIn").value; const s=STATIONS.find(x=>x.id===n); if(s){ S.route="station"; S.current=n; save(); render(); } else toast("No station with that number",true); };
+  $("#codeGo").onclick=jump; $("#codeIn").onkeydown=e=>{ if(e.key==="Enter") jump(); };
+  $("#toSummary").onclick=()=>{ S.route="summary"; save(); render(); };
+}
+
+function renderStation(id){
+  const s=STATIONS.find(x=>x.id===id);
+  const a=S.answers[id]||{ q1:null, q2:null, est:s.est.default, reflect:"" };
+  S.answers[id]=a;
+
+  const optBtns=(q,key)=> q.opts.map((o,i)=>`
+    <button class="opt" data-key="${key}" data-i="${i}" aria-pressed="${a[key]===i}">
+      <span class="mk"></span>
+      <span><span class="ot">${esc(o.l)}</span>${a[key]===i&&o.note?`<span class="note">${esc(o.note)}</span>`:""}</span>
+    </button>`).join("");
+
+  screen.innerHTML=`
+    <button class="back" id="back">← all stations</button>
+    <span class="eyebrow">${esc(s.code)}</span>
+    <h1 style="font-size:clamp(26px,6vw,38px)">${esc(s.name)}</h1>
+
+    <div class="panel impact">
+      <h4>What's happening here</h4>
+      <p>${esc(s.what)}</p>
+    </div>
+    <div class="panel lever">
+      <h4>The sustainability lever (incl. AI)</h4>
+      <p>${esc(s.lever)}</p>
+    </div>
+    ${s.id===2?`<button class="btn key block" id="playGame" style="margin:4px 0 4px">▶ Play: Location Shoot Challenge${S.game&&S.game.done?` — best ${S.game.score}/50`:""}</button>
+    <p class="small" style="margin:8px 0 2px">Take a reality format to a remote island, then watch its footprint against this studio. 10 markers · score 1–5 each · 50 = perfect.</p>`:""}
+
+    <div class="q">
+      <div class="qn">TASK 1 — IDENTIFY THE IMPACT</div>
+      <div class="qt">${esc(s.q1.t)}</div>
+      <div data-group="q1">${optBtns(s.q1,"q1")}</div>
+    </div>
+
+    <div class="q">
+      <div class="qn">TASK 2 — CHOOSE THE INTERVENTION</div>
+      <div class="qt">${esc(s.q2.t)}</div>
+      <div data-group="q2">${optBtns(s.q2,"q2")}</div>
+    </div>
+
+    <div class="q">
+      <div class="qn">TASK 3 — YOUR ESTIMATE</div>
+      <div class="qt">${esc(s.est.label)}</div>
+      <input type="range" id="est" min="0" max="100" value="${a.est}">
+      <div class="meter">
+        <div class="scale"><div class="needle" id="needle" style="left:0%"></div></div>
+        <div class="ends"><span>${esc(s.est.from)} · WASTEFUL</span><span>SUSTAINABLE · ${esc(s.est.to)}</span></div>
+        <div class="read"><span>Sustainability reading</span><b id="readout">— / 100</b></div>
+      </div>
+    </div>
+
+    <div class="q">
+      <div class="qn">TASK 4 — REFLECT</div>
+      <div class="qt">In one or two lines: what's the real-world constraint to actually doing this on a shoot?</div>
+      <textarea id="reflect" placeholder="e.g. LED kit hire budget, client expectations, crew familiarity…">${esc(a.reflect)}</textarea>
+    </div>
+  `;
+
+  $("#back").onclick=()=>{ S.route="hub"; save(); render(); };
+  const pg=$("#playGame"); if(pg) pg.onclick=()=>{ S.game={ step:0, choices:Array(LOCATION_GAME.markers.length).fill(null), done:false, score:(S.game&&S.game.done?S.game.score:0) }; S.route="game"; save(); render(); };
+
+  function paintMeter(){
+    const sc=stationScore(id);
+    $("#needle").style.left = (sc==null? a.est : sc) + "%";
+    $("#readout").textContent = (sc==null? "— " : sc) + " / 100";
+  }
+  paintMeter();
+
+  screen.querySelectorAll(".opt").forEach(btn=> btn.onclick=()=>{
+    a[btn.dataset.key]=+btn.dataset.i; save(); renderStation(id); // re-render to show note + meter
+  });
+  const range=$("#est");
+  range.oninput=()=>{ a.est=+range.value; const sc=stationScore(id); if(sc==null) $("#needle").style.left=a.est+"%"; };
+  range.onchange=()=>save();
+  $("#reflect").oninput=e=>{ a.reflect=e.target.value; };
+  $("#reflect").onchange=()=>save();
+
+  // dock with next/complete
+  dock.classList.remove("hide");
+  const ready=a.q1!=null&&a.q2!=null;
+  dock.innerHTML=`
+    <button class="btn" id="dBack">Stations</button>
+    <span class="grow"></span>
+    <button class="btn primary" id="dNext" ${ready?"":"disabled"}>${nextStation(id)?"Save & next station →":"Save & review →"}</button>
+  `;
+  $("#dBack").onclick=()=>{ save(); S.route="hub"; render(); };
+  $("#dNext").onclick=()=>{
+    save();
+    const nx=nextStation(id);
+    if(nx){ S.route="station"; S.current=nx.id; } else { S.route="summary"; }
+    render(); toast("Saved");
+  };
+}
+function nextStation(id){ const i=STATIONS.findIndex(s=>s.id===id); return STATIONS[i+1]||null; }
+
+/* ---- 9b. LOCATION SHOOT GAME screen --------------------------------- */
+function locFootprint(){
+  // sum chosen impacts; unanswered markers count as worst-case (not yet decided)
+  return LOCATION_GAME.markers.reduce((a,m,i)=>{
+    const c=S.game.choices[i];
+    return a + (c==null ? Math.max(...m.opts.map(o=>o.impact)) : m.opts[c].impact);
+  },0);
+}
+function gameScore(){ return S.game.choices.reduce((a,c,i)=> a + (c==null?0:LOCATION_GAME.markers[i].opts[c].p), 0); }
+
+function compareBars(){
+  const loc=locFootprint();
+  const locPct=Math.round(loc/LOC_MAX*100);
+  const vpPct=Math.round(VP_BASELINE/LOC_MAX*100);
+  return `<div class="vs">
+    <div class="vbar loc">
+      <div class="top"><span>LOCATION SHOOT</span><b>${loc} units</b></div>
+      <div class="track"><div class="barfill" style="width:${locPct}%"></div><div class="vpline" style="left:${vpPct}%"></div></div>
+    </div>
+    <div class="vbar vp">
+      <div class="top"><span>VIRTUAL PRODUCTION STUDIO</span><b>${VP_BASELINE} units</b></div>
+      <div class="track"><div class="barfill" style="width:${vpPct}%"></div></div>
+    </div>
+  </div>
+  <p class="small">Indicative teaching units — not audited tCO₂e. The white line marks the studio baseline; get your location bar down to it by minimising every decision.</p>`;
+}
+
+function renderGame(){
+  if(!S.game){ S.game={ step:0, choices:Array(LOCATION_GAME.markers.length).fill(null), done:false, score:0 }; }
+  const G=LOCATION_GAME, total=G.markers.length;
+
+  // ----- result screen -----
+  if(S.game.step>=total){
+    const score=gameScore(); S.game.score=Math.max(S.game.score||0,score); S.game.done=true; save();
+    const loc=locFootprint();
+    const beatVP = loc<=VP_BASELINE;
+    const verdict = score>=46 ? "Outstanding — you ran this format at near-minimum impact."
+                  : score>=36 ? "Strong. A few decisions still cost more than they needed to."
+                  : score>=26 ? "Middling. The big-ticket items (travel, power) are where you lost points."
+                  : "High-impact production. Re-walk it and attack travel, freight and power first.";
+    dock.classList.remove("hide");
+    dock.innerHTML=`<button class="btn" id="gBack">VP station</button><span class="grow"></span><button class="btn primary" id="gReplay">Walk it again</button>`;
+    screen.innerHTML=`
+      <span class="eyebrow">${esc(G.title)} · field report</span>
+      <h2 style="margin-top:8px">Your shoot scored ${score} / 50</h2>
+      <div class="bigscore"><span class="n">${score}</span><span class="d">/ 50 · lower impact = higher score</span></div>
+      <p class="verdict">${verdict}</p>
+      ${compareBars()}
+      <div class="kicker"><b>The takeaway:</b> ${beatVP
+        ? "you pushed the location footprint to — or below — the virtual-production baseline. Notice how: nearly every top-scoring choice <i>was</i> a VP-style decision (stage set, near-base crew, stage mains). Minimising a location shoot tends to converge on simply doing it virtually."
+        : "your location shoot still sits above the virtual-production studio. For a controlled, fixed-set format like this, VP gets to that lower baseline by default — without you having to win every single decision."}</div>
+      <div class="ledger">${G.markers.map((m,i)=>{ const c=S.game.choices[i]; const o=c==null?null:m.opts[c];
+        return `<div class="lr"><span class="nm">${esc(m.code)} · ${esc(m.title)}</span><span class="vv ${o?'':'miss'}">${o?o.p+'/5':'—'}</span></div>`; }).join("")}</div>
+      <p class="small">Your game score is saved with your station results and submitted to the class sheet.</p>
+    `;
+    $("#gBack").onclick=()=>{ S.route="station"; S.current=2; save(); render(); };
+    $("#gReplay").onclick=()=>{ S.game={ step:0, choices:Array(total).fill(null), done:false, score:S.game.score }; save(); render(); };
+    return;
+  }
+
+  // ----- intro screen -----
+  if(S.game.step===0 && S.game.choices.every(c=>c==null)){
+    dock.classList.remove("hide");
+    dock.innerHTML=`<button class="btn" id="gExit">VP station</button><span class="grow"></span><button class="btn primary" id="gStart">Start the walk →</button>`;
+    screen.innerHTML=`
+      <button class="back" id="back">← virtual production</button>
+      <span class="eyebrow">Location shoot challenge</span>
+      <h1 style="font-size:clamp(26px,6vw,40px)">${esc(G.title)}</h1>
+      <div class="gamehero"><p class="premise">${esc(G.premise)}</p>
+        <div class="marker-rail">${G.markers.map(()=>`<i></i>`).join("")}</div>
+      </div>
+      ${compareBars()}
+    `;
+    $("#back").onclick=()=>{ S.route="station"; S.current=2; save(); render(); };
+    $("#gExit").onclick=()=>{ S.route="station"; S.current=2; save(); render(); };
+    $("#gStart").onclick=()=>{ S.game.started=true; save(); renderMarker(); };
+    return;
+  }
+  renderMarker();
+}
+
+function renderMarker(){
+  const G=LOCATION_GAME, total=G.markers.length, i=S.game.step, m=G.markers[i];
+  const chosen=S.game.choices[i];
+  dock.classList.remove("hide");
+  const rail=G.markers.map((_,k)=>`<i class="${k<i?'on':k===i?'cur':''}"></i>`).join("");
+  screen.innerHTML=`
+    <button class="back" id="back">← markers</button>
+    <div class="marker-rail" style="margin-bottom:14px">${rail}</div>
+    <span class="eyebrow">${esc(m.code)} · marker ${i+1} of ${total} · score so far ${gameScore()}/50</span>
+    <h1 style="font-size:clamp(24px,5.5vw,34px)">${esc(m.title)}</h1>
+    <p class="lede" style="font-size:16px">${esc(m.q)}</p>
+    <div id="opts" style="margin-top:14px">
+      ${m.opts.map((o,k)=>`<button class="opt" data-k="${k}" aria-pressed="${chosen===k}">
+        <span class="mk"></span>
+        <span class="ot">${esc(o.l)}</span>
+        <span class="pe">${o.p}/5</span>
+      </button>`).join("")}
+    </div>
+    <div id="fb"></div>
+    ${compareBars()}
+  `;
+  $("#back").onclick=()=>{ if(i>0){ S.game.step=i-1; save(); renderMarker(); } else { S.route="station"; S.current=2; save(); render(); } };
+
+  function paintDock(){
+    const picked=S.game.choices[i]!=null;
+    dock.innerHTML=`<button class="btn" id="mBack">${i>0?'← Back':'Markers'}</button><span class="grow"></span>
+      <button class="btn primary" id="mNext" ${picked?'':'disabled'}>${i+1<total?'Next marker →':'See field report →'}</button>`;
+    $("#mBack").onclick=()=>{ if(i>0){ S.game.step=i-1; save(); renderMarker(); } else { S.route="station"; S.current=2; save(); render(); } };
+    $("#mNext").onclick=()=>{ S.game.step=i+1; save(); S.route="game"; render(); };
+  }
+  function showFb(){
+    const c=S.game.choices[i]; if(c==null){ $("#fb").innerHTML=""; return; }
+    const o=m.opts[c];
+    $("#fb").innerHTML=`<div class="feedback"><span class="p">+${o.p}</span>${esc(o.why)}</div>`;
+  }
+  $("#opts").querySelectorAll(".opt").forEach(b=> b.onclick=()=>{
+    S.game.choices[i]=+b.dataset.k; save();
+    $("#opts").querySelectorAll(".opt").forEach(x=>x.setAttribute("aria-pressed", x===b));
+    showFb(); paintDock();
+    // live-update the comparison bars
+    const bars=screen.querySelector(".vs"); if(bars){ const tmp=document.createElement("div"); tmp.innerHTML=compareBars(); bars.replaceWith(tmp.firstElementChild); }
+  });
+  showFb(); paintDock();
+}
+
+
+function renderSummary(){
+  dock.classList.add("hide");
+  const scored=STATIONS.map(s=>({s,sc:stationScore(s.id)}));
+  const done=scored.filter(x=>x.sc!=null);
+  const overall = done.length? Math.round(done.reduce((a,x)=>a+x.sc,0)/done.length) : 0;
+  const rows=scored.map(x=>`
+    <div class="lr">
+      <span class="nm">${esc(x.s.code.split(" / ")[1]||x.s.name)}</span>
+      <span class="vv ${x.sc==null?"miss":""}">${x.sc==null?"not done":x.sc+" / 100"}</span>
+    </div>`).join("");
+  screen.innerHTML=`
+    <button class="back" id="back">← back to stations</button>
+    <span class="eyebrow">${esc(S.student.name)} · field report</span>
+    <h2 style="margin-top:8px">Your sustainability reading</h2>
+    <div class="bigscore"><span class="n">${overall}</span><span class="d">/ 100 average · ${done.length}/${STATIONS.length} stations</span></div>
+    <p class="small">Higher means you consistently identified the real impact and chose interventions that reduce it — including using AI where it genuinely helps and avoiding it where it doesn't.</p>
+    <div class="ledger">${rows}</div>
+    <button class="btn primary block" id="submit">${GOOGLE_ENDPOINT?"Submit to class sheet":"Finish & export results"}</button>
+    <div class="row2" style="margin-top:11px">
+      <button class="btn" id="csv">Download CSV</button>
+      <button class="btn" id="json">Download JSON</button>
+    </div>
+    <p class="small" style="margin-top:12px">${done.length<STATIONS.length?"You can still go back and complete the remaining stations before submitting.":"All stations complete — nice work."}</p>
+    ${setupBlock()}
+  `;
+  $("#back").onclick=()=>{ S.route="hub"; save(); render(); };
+  $("#submit").onclick=submitResults;
+  $("#csv").onclick=()=>downloadFile(toCSV(),"going-green-results.csv","text/csv");
+  $("#json").onclick=()=>downloadFile(JSON.stringify(buildRecord(),null,2),"going-green-results.json","application/json");
+}
+
+function setupBlock(){
+  return `<details class="setup">
+    <summary>Teacher setup — central results collection</summary>
+    <p>To collect every student's results into one Google Sheet, create a Google Apps Script Web App and paste its URL into <code>GOOGLE_ENDPOINT</code> at the top of this file. The full script and steps are in the chat alongside this app. With no endpoint set, the app runs offline and students export their own CSV/JSON.</p>
+  </details>`;
+}
+
+/* ---- 10. RESULTS: build / submit / export --------------------------- */
+function buildRecord(){
+  const rec={
+    submittedAt:new Date().toISOString(),
+    name:S.student?.name||"", studentId:S.student?.id||"", group:S.student?.group||"",
+    durationSec: S.started? Math.floor((Date.now()-S.started)/1000):0,
+    completed: completedCount(), totalStations: STATIONS.length,
+    device: navigator.userAgent
+  };
+  let sum=0,n=0;
+  STATIONS.forEach(s=>{
+    const a=S.answers[s.id]||{}; const sc=stationScore(s.id);
+    rec["s"+s.id+"_name"]=s.name;
+    rec["s"+s.id+"_impact"]= a.q1!=null? s.q1.opts[a.q1].l : "";
+    rec["s"+s.id+"_intervention"]= a.q2!=null? s.q2.opts[a.q2].l : "";
+    rec["s"+s.id+"_estimate"]= a.est!=null? a.est : "";
+    rec["s"+s.id+"_reflection"]= a.reflect||"";
+    rec["s"+s.id+"_score"]= sc==null? "" : sc;
+    if(sc!=null){ sum+=sc; n++; }
+  });
+  rec.overallScore = n? Math.round(sum/n):0;
+  // Location Shoot game results — always emit the same columns
+  const played = !!(S.game && S.game.done);
+  let lf=0; if(played) LOCATION_GAME.markers.forEach((m,i)=>{ const c=S.game.choices[i]; lf += (c==null?Math.max(...m.opts.map(o=>o.impact)):m.opts[c].impact); });
+  rec.gameScore = played ? (S.game.score + " / 50") : "not played";
+  rec.gameLocationFootprint = played ? lf : "";
+  rec.gameVPbaseline = played ? VP_BASELINE : "";
+  rec.gameChoices = played ? LOCATION_GAME.markers.map((m,i)=>{ const c=S.game.choices[i]; return m.code+":"+(c==null?"-":m.opts[c].p); }).join(" ") : "";
+  return rec;
+}
+function toCSV(){
+  const r=buildRecord(); const keys=Object.keys(r);
+  const q=v=>'"'+String(v).replace(/"/g,'""')+'"';
+  return keys.map(q).join(",")+"\n"+keys.map(k=>q(r[k])).join(",");
+}
+function downloadFile(text,name,type){
+  const blob=new Blob([text],{type}); const url=URL.createObjectURL(blob);
+  const a=document.createElement("a"); a.href=url; a.download=name; a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),1500); toast("Downloaded "+name);
+}
+async function submitResults(){
+  if(completedCount()===0){ toast("Complete at least one station first",true); return; }
+  const rec=buildRecord();
+  if(!GOOGLE_ENDPOINT){ downloadFile(JSON.stringify(rec,null,2),"going-green-results.json","application/json"); toast("Saved your results file"); return; }
+  const btn=$("#submit"); btn.disabled=true; btn.textContent="Submitting…";
+  try{
+    await fetch(GOOGLE_ENDPOINT,{ method:"POST", mode:"no-cors",
+      headers:{"Content-Type":"text/plain;charset=utf-8"}, body:JSON.stringify(rec) });
+    btn.textContent="Submitted ✓"; toast("Results sent to the class sheet");
+  }catch(e){
+    btn.disabled=false; btn.textContent="Retry submit";
+    downloadFile(JSON.stringify(rec,null,2),"going-green-results.json","application/json");
+    toast("Couldn't reach the sheet — saved a backup file instead",true);
+  }
+}
+
+/* ---- 11. deep link ?station=N + boot -------------------------------- */
+(function boot(){
+  const p=new URLSearchParams(location.search);
+  const st=+p.get("station");
+  if(S.student && st && STATIONS.find(x=>x.id===st)){ S.route="station"; S.current=st; S.view="ar"; }
+  render(); tc();
+})();
+</script>
+</body>
+</html>
