@@ -1,0 +1,551 @@
+{
+  "date": "2026-11-04",
+  "title": "Power on the Ballot",
+  "tagline": "Midterm results rattle AI stocks, Anthropic's filing flags a self-improvement threshold, and AI's power hunger heads for COP31.",
+  "hosts": {
+    "A": {
+      "name": "Max",
+      "voice": "am_michael"
+    },
+    "B": {
+      "name": "Nova",
+      "voice": "af_heart"
+    }
+  },
+  "lines": [
+    {
+      "speaker": "A",
+      "text": "Texas votes, and AI stocks flinch. CNBC reports AI-linked shares fell in overnight trading after Democrat Gina Hinojosa was projected to win the Texas governor's race. She campaigned for tougher limits on data center development, including a moratorium.",
+      "story_id": "ai-1",
+      "section": "intro"
+    },
+    {
+      "speaker": "B",
+      "text": "And Texas is not just any state here. Wells Fargo estimates twenty-seven percent of planned American data center power capacity is in Texas. Power politics just became an AI story.",
+      "story_id": null,
+      "section": "intro"
+    },
+    {
+      "speaker": "A",
+      "text": "Good morning, it's Wednesday the fourth of November, twenty twenty-six, the morning after the American midterm elections. I'm Max.",
+      "story_id": null,
+      "section": "intro"
+    },
+    {
+      "speaker": "B",
+      "text": "And I'm Nova. This is Morning Signal.",
+      "story_id": null,
+      "section": "intro"
+    },
+    {
+      "speaker": "A",
+      "text": "Here's the rundown. Anthropic's I P O filing comes with a striking safety warning and an eye-watering compute bill.",
+      "story_id": null,
+      "section": "intro"
+    },
+    {
+      "speaker": "B",
+      "text": "Publishers widen their fight with AI, from a lawsuit against Brave to a big opinion at Europe's top court.",
+      "story_id": null,
+      "section": "intro"
+    },
+    {
+      "speaker": "A",
+      "text": "And with the C O P thirty-one climate talks opening next week, we connect AI, power grids and politics. Let's go.",
+      "story_id": null,
+      "section": "intro"
+    },
+    {
+      "speaker": "A",
+      "text": "Let's stay on that market move. CNBC had CoreWeave down about seven percent overnight, and its live coverage separately reported Democrats winning big in the midterms, with traders betting that could slow the data center buildout.",
+      "story_id": null,
+      "section": "ai"
+    },
+    {
+      "speaker": "B",
+      "text": "Is that a real signal, or just a jittery night of trading?",
+      "story_id": null,
+      "section": "ai"
+    },
+    {
+      "speaker": "A",
+      "text": "One overnight move is a mood, not a verdict. But if a hub state restricts building, compute goes elsewhere or goes slower.",
+      "story_id": null,
+      "section": "ai"
+    },
+    {
+      "speaker": "B",
+      "text": "More on that in the crossover. What's next?",
+      "story_id": null,
+      "section": "ai"
+    },
+    {
+      "speaker": "A",
+      "text": "Anthropic. TechCrunch reports that in its amended S one filing with the Securities and Exchange Commission, filed on November second, the company warned that future models could soon meet its own threshold for AI-driven acceleration of AI research.",
+      "story_id": "ai-2",
+      "section": "ai"
+    },
+    {
+      "speaker": "B",
+      "text": "That's the idea sometimes called recursive self-improvement. AI helping to build better AI.",
+      "story_id": null,
+      "section": "ai"
+    },
+    {
+      "speaker": "A",
+      "text": "Right. The filing cautions that using AI to build more capable AI could carry considerable safety risk. And TechCrunch reports Anthropic is considering policy updates to keep humans in control of frontier model development.",
+      "story_id": null,
+      "section": "ai"
+    },
+    {
+      "speaker": "B",
+      "text": "Worth stressing, though. Coverage notes no current model has been designated as exceeding that threshold. So this is a warning light, not a siren.",
+      "story_id": null,
+      "section": "ai"
+    },
+    {
+      "speaker": "A",
+      "text": "Agreed. But a securities filing turns it from a research talking point into a formal risk disclosure.",
+      "story_id": null,
+      "section": "ai"
+    },
+    {
+      "speaker": "B",
+      "text": "And that same filing has some very big numbers in it.",
+      "story_id": "ai-3",
+      "section": "ai"
+    },
+    {
+      "speaker": "A",
+      "text": "It does. CNBC reports roughly seventeen billion dollars in third-quarter revenue, and thirty-three point two four billion dollars for the nine months to the end of September.",
+      "story_id": null,
+      "section": "ai"
+    },
+    {
+      "speaker": "B",
+      "text": "And the spending?",
+      "story_id": null,
+      "section": "ai"
+    },
+    {
+      "speaker": "A",
+      "text": "That's what stopped me. About eight hundred and ninety-five billion dollars in purchase commitments and lease agreements, which the filing says are substantially all related to compute and infrastructure.",
+      "story_id": null,
+      "section": "ai"
+    },
+    {
+      "speaker": "B",
+      "text": "That's an infrastructure bet. And infrastructure means electricity.",
+      "story_id": null,
+      "section": "ai"
+    },
+    {
+      "speaker": "A",
+      "text": "Which brings us to the plumbing. TechCrunch reports chipmaker Marvell has agreed to buy optical-component maker Lumentum in an all-stock deal valued at about one hundred and fifteen billion dollars in enterprise value.",
+      "story_id": "ai-4",
+      "section": "ai"
+    },
+    {
+      "speaker": "B",
+      "text": "One of the largest deals in tech history. Why optics, Max?",
+      "story_id": null,
+      "section": "ai"
+    },
+    {
+      "speaker": "A",
+      "text": "The deal is aimed at AI data center connectivity, and optical interconnect is becoming a key bottleneck. Lumentum holders get four and a half Marvell shares for each share they own.",
+      "story_id": null,
+      "section": "ai"
+    },
+    {
+      "speaker": "B",
+      "text": "And don't hold your breath. It's not expected to close until twenty twenty-eight.",
+      "story_id": null,
+      "section": "ai"
+    },
+    {
+      "speaker": "B",
+      "text": "Over to media and creative, where the AI copyright fight has found a new target. TheWrap reports The New York Times has sued Brave Software in federal court in Manhattan.",
+      "story_id": "media-1",
+      "section": "media"
+    },
+    {
+      "speaker": "A",
+      "text": "Brave, the search company? Not one of the AI labs?",
+      "story_id": null,
+      "section": "media"
+    },
+    {
+      "speaker": "B",
+      "text": "Exactly. And on the same day, the Daily News, the Chicago Tribune and the Orlando Sentinel filed a separate complaint.",
+      "story_id": null,
+      "section": "media"
+    },
+    {
+      "speaker": "A",
+      "text": "Alleging what?",
+      "story_id": null,
+      "section": "media"
+    },
+    {
+      "speaker": "B",
+      "text": "That Brave built a search index of more than thirty billion pages, using a crawler sites cannot detect or block. That it let users get around paywalls. And that it sold access to that content to AI developers.",
+      "story_id": null,
+      "section": "media"
+    },
+    {
+      "speaker": "A",
+      "text": "Who's named as the customers?",
+      "story_id": null,
+      "section": "media"
+    },
+    {
+      "speaker": "B",
+      "text": "The Times names Anthropic, Perplexity, Mistral, x A I and Cohere. It also says Brave ignored cease-and-desist letters sent in August twenty twenty-five and April twenty twenty-six. To be clear, these are allegations, and no response from Brave was reported.",
+      "story_id": null,
+      "section": "media"
+    },
+    {
+      "speaker": "A",
+      "text": "So publishers are going after the data middlemen now, not just the model makers. Buy crawl data, and your legal risk just went up.",
+      "story_id": null,
+      "section": "media"
+    },
+    {
+      "speaker": "B",
+      "text": "In Europe, a different angle. Dataconomy reports that Advocate General Maciej Szpunar, an adviser to the E U's Court of Justice, says Google's Gemini may infringe the press publishers' right when it retrieves news articles and reuses them in its answers.",
+      "story_id": "media-2",
+      "section": "media"
+    },
+    {
+      "speaker": "A",
+      "text": "And an Advocate General's opinion isn't a ruling, right?",
+      "story_id": null,
+      "section": "media"
+    },
+    {
+      "speaker": "B",
+      "text": "Right, it's non-binding. The case was brought by the Hungarian publisher Like Company against Google. And here's the interesting split. He said E U law allows AI training on protected articles, under the text and data mining exception, but treated the chatbot's answers as a separate copyright question.",
+      "story_id": null,
+      "section": "media"
+    },
+    {
+      "speaker": "A",
+      "text": "How did Google take it?",
+      "story_id": null,
+      "section": "media"
+    },
+    {
+      "speaker": "B",
+      "text": "Google said the opinion recognised that E U law allows AI training on publicly available information. The court usually follows these opinions, and a ruling is expected in the coming months.",
+      "story_id": null,
+      "section": "media"
+    },
+    {
+      "speaker": "A",
+      "text": "So the fight moves from what goes into the model to what comes out of it. Which is exactly where a chatbot competes with a news site for readers.",
+      "story_id": null,
+      "section": "media"
+    },
+    {
+      "speaker": "B",
+      "text": "And Hollywood is picking sides too. Axios reports creative-industry groups have filed amicus briefs supporting The New York Times in its copyright case against OpenAI and Microsoft.",
+      "story_id": "media-3",
+      "section": "media"
+    },
+    {
+      "speaker": "A",
+      "text": "Who signed up?",
+      "story_id": null,
+      "section": "media"
+    },
+    {
+      "speaker": "B",
+      "text": "The Human Consent Foundation, a nonprofit co-founded by Cate Blanchett, filed a brief disputing claims that licensing works for AI training is impractical. Co-signers included C A A and the Music Artists Coalition, and Anne Hathaway, Bette Midler and Madonna voiced support.",
+      "story_id": null,
+      "section": "media"
+    },
+    {
+      "speaker": "A",
+      "text": "That's quite a cast list.",
+      "story_id": null,
+      "section": "media"
+    },
+    {
+      "speaker": "B",
+      "text": "And in a separate brief, W M E said its position is not that AI use of creative materials should be stopped, but that it should be licensed.",
+      "story_id": null,
+      "section": "media"
+    },
+    {
+      "speaker": "A",
+      "text": "That's the business headline. The agencies aren't arguing for a ban, they're arguing for a paid market for training data in film, TV and music.",
+      "story_id": null,
+      "section": "media"
+    },
+    {
+      "speaker": "B",
+      "text": "To sustainability, and back to the midterms through a climate lens. Inside Climate News reports Democrats won control of both houses of Congress and a majority of governorships in the November third elections.",
+      "story_id": "sus-1",
+      "section": "sustainability"
+    },
+    {
+      "speaker": "A",
+      "text": "How is it reading the result?",
+      "story_id": null,
+      "section": "sustainability"
+    },
+    {
+      "speaker": "B",
+      "text": "As a referendum on the economy, with voters seeking action on energy costs, corruption and data centers. Environmentalists believe the result sets the stage for renewed climate policy, and it notes Representative Kathy Castor has been leading work on an economy and environment agenda for the new Congress.",
+      "story_id": null,
+      "section": "sustainability"
+    },
+    {
+      "speaker": "A",
+      "text": "I'd add a note of caution. Setting the stage and passing laws are two very different things.",
+      "story_id": null,
+      "section": "sustainability"
+    },
+    {
+      "speaker": "B",
+      "text": "Fair. But data centers making that list of voter concerns at all is the story.",
+      "story_id": null,
+      "section": "sustainability"
+    },
+    {
+      "speaker": "B",
+      "text": "Now compare China. Inside Climate News reports China plans to use its renewable energy sector to compete in building AI data centers, a different path from the United States.",
+      "story_id": "sus-3",
+      "section": "sustainability"
+    },
+    {
+      "speaker": "A",
+      "text": "What's the actual target?",
+      "story_id": null,
+      "section": "sustainability"
+    },
+    {
+      "speaker": "B",
+      "text": "Renewables for more than eighty percent of the electricity used by new data centers in its major computing hubs. And an initiative called East Data, West Computing, launched in twenty twenty-two, steers computing infrastructure toward western regions with abundant renewable resources.",
+      "story_id": null,
+      "section": "sustainability"
+    },
+    {
+      "speaker": "A",
+      "text": "Can clean power really keep pace with that much compute?",
+      "story_id": null,
+      "section": "sustainability"
+    },
+    {
+      "speaker": "B",
+      "text": "The article leaves that open. But it's a genuine fork in the road for how big AI's carbon footprint gets.",
+      "story_id": null,
+      "section": "sustainability"
+    },
+    {
+      "speaker": "B",
+      "text": "One more, on methane. Inside Climate News covers a Greenpeace-commissioned report, with modelling by Cerulogy, on a metric called G W P star.",
+      "story_id": "sus-6",
+      "section": "sustainability"
+    },
+    {
+      "speaker": "A",
+      "text": "Global warming potential, star. Sounds like an accounting argument.",
+      "story_id": null,
+      "section": "sustainability"
+    },
+    {
+      "speaker": "B",
+      "text": "It is, and the coverage asks whether it's a bookkeeping trick. The report finds the top ten livestock-exporting countries, including Brazil and the United States, could report a thirty percent methane cut by twenty thirty under that metric, while actual cuts are only about zero point six percent.",
+      "story_id": null,
+      "section": "sustainability"
+    },
+    {
+      "speaker": "A",
+      "text": "Thirty versus zero point six. Does anyone defend it?",
+      "story_id": null,
+      "section": "sustainability"
+    },
+    {
+      "speaker": "B",
+      "text": "Yes, its defenders say the science behind it is legitimate. But with C O P thirty-one about to start, which metric counts methane is a live fight.",
+      "story_id": null,
+      "section": "sustainability"
+    },
+    {
+      "speaker": "A",
+      "text": "Time for the crossover, and today it writes itself. Power.",
+      "story_id": null,
+      "section": "crossover"
+    },
+    {
+      "speaker": "B",
+      "text": "Start with the calendar. Climate Home News says C O P thirty-one, the U N climate summit, runs from the ninth to the twentieth of November in Antalya, Turkey. Turkey hosts, and Australia leads the negotiations.",
+      "story_id": "sus-2",
+      "section": "crossover"
+    },
+    {
+      "speaker": "A",
+      "text": "And the flagship idea there is electrification.",
+      "story_id": null,
+      "section": "crossover"
+    },
+    {
+      "speaker": "B",
+      "text": "Right. The Turkish presidency is expected to formally launch its electrification pledge on Energy Day, the tenth of November, and reveal which countries have signed up. More electrification means more grid demand, exactly where AI is already pushing.",
+      "story_id": null,
+      "section": "crossover"
+    },
+    {
+      "speaker": "A",
+      "text": "And the AI industry knows it. Axios reports OpenAI has launched a Grid Protectors Program, vowing to cut electricity use at American data center campuses it directly develops when extreme weather or other emergencies strain the power grid.",
+      "story_id": "ai-5",
+      "section": "crossover"
+    },
+    {
+      "speaker": "B",
+      "text": "Let me push back a little. Is that a real commitment, or a shield against the backlash?",
+      "story_id": null,
+      "section": "crossover"
+    },
+    {
+      "speaker": "A",
+      "text": "Axios itself frames it against that backlash over data centers' electricity demand. The real test is how often it's used and how much power actually gets cut.",
+      "story_id": null,
+      "section": "crossover"
+    },
+    {
+      "speaker": "B",
+      "text": "Across the Atlantic, a different answer. Put the data center where the grid connection already is. CNBC reports U K energy company Drax has signed an agreement with Brookfield and its AI infrastructure platform Radiant to develop an AI data center on the Drax Power Station estate in North Yorkshire.",
+      "story_id": "ai-6",
+      "section": "crossover"
+    },
+    {
+      "speaker": "A",
+      "text": "With total investment that could exceed twenty billion pounds, about twenty-seven billion dollars, targeting more than one gigawatt over three phases. Drax shares rose eight percent.",
+      "story_id": null,
+      "section": "crossover"
+    },
+    {
+      "speaker": "B",
+      "text": "Caveats, though. Phase one still needs planning, regulatory and network approvals, and a tenant. And it puts biomass power's carbon credentials under scrutiny.",
+      "story_id": null,
+      "section": "crossover"
+    },
+    {
+      "speaker": "A",
+      "text": "So pull the threads together. Texas voters, data center limits, OpenAI promising to throttle down, China betting on renewables, Britain repurposing a power station.",
+      "story_id": null,
+      "section": "crossover"
+    },
+    {
+      "speaker": "B",
+      "text": "And next week, negotiators in Antalya with electrification at the centre of the agenda. AI's power appetite isn't a technical footnote anymore. It's on the ballot and on the negotiating table.",
+      "story_id": null,
+      "section": "crossover"
+    },
+    {
+      "speaker": "A",
+      "text": "Plus the media desk. Publishers suing over scraping, a court adviser questioning chatbot answers. Whether it's electricity or articles, AI's inputs are getting a price tag.",
+      "story_id": null,
+      "section": "crossover"
+    },
+    {
+      "speaker": "B",
+      "text": "Bills for power, bills for content. Somebody's paying.",
+      "story_id": null,
+      "section": "crossover"
+    },
+    {
+      "speaker": "A",
+      "text": "Quick hits. One line each.",
+      "story_id": null,
+      "section": "crossover"
+    },
+    {
+      "speaker": "B",
+      "text": "The Washington Post warned voters off AI chatbots for last-minute midterm research, after its own test found six popular chatbots invented races, mixed up candidates and cited small websites with wrong information that appeared to be AI-generated.",
+      "story_id": "ai-7",
+      "section": "ai"
+    },
+    {
+      "speaker": "A",
+      "text": "CNBC reports OpenAI signed four deals with Abu Dhabi entities, including a partnership with state oil company ADNOC and G forty-two's Inception forty-two, as it seeks Gulf investors for a reported twenty billion dollar funding round.",
+      "story_id": "ai-8",
+      "section": "ai"
+    },
+    {
+      "speaker": "B",
+      "text": "OpenAI also published how it monitors its most capable models for misalignment, with a model-based reviewer checking agents for deception, unauthorized actions or attempts to game evaluations.",
+      "story_id": "ai-9",
+      "section": "ai"
+    },
+    {
+      "speaker": "A",
+      "text": "And a new preprint with a great title. We Ran a Research Sprint With AI. The AI Worked. The Research Didn't. It's a small pilot, twelve researchers over one hundred minutes, and the authors note it can't separate AI effects from time pressure.",
+      "story_id": "ai-10",
+      "section": "ai"
+    },
+    {
+      "speaker": "B",
+      "text": "Deadline reports Netflix is testing AI Discover, a mood-based tab on TVs, with a small group of American members. No chat box in this first version, and no word on which AI models power it.",
+      "story_id": "media-4",
+      "section": "media"
+    },
+    {
+      "speaker": "A",
+      "text": "Governor Gavin Newsom proposed raising California's film and TV tax credit from seven hundred and fifty million dollars to at least one billion dollars a year, extended to twenty forty, with one hundred million set aside for independent productions. It still needs legislative approval.",
+      "story_id": "media-5",
+      "section": "media"
+    },
+    {
+      "speaker": "B",
+      "text": "Campaign reports Publicis has closed its two point two billion dollar purchase of the data company LiveRamp and launched an AI growth engine.",
+      "story_id": "media-6",
+      "section": "media"
+    },
+    {
+      "speaker": "A",
+      "text": "Inside Climate News reports the Environmental Protection Agency will move to terminate a two thousand and five compliance agreement on factory-farm air emissions. Dairy and pork groups welcomed it, while critics say those emissions are now likely to go unmeasured.",
+      "story_id": "sus-4",
+      "section": "sustainability"
+    },
+    {
+      "speaker": "B",
+      "text": "A Nature Communications study led by University of Colorado Boulder researchers projects that, without new protections, an average of roughly three hundred thousand American buildings could burn in wildfires by mid-century, nearly triple current levels.",
+      "story_id": "sus-5",
+      "section": "sustainability"
+    },
+    {
+      "speaker": "A",
+      "text": "A U K report covered by Trellis finds eighty-two percent of green jobs have lower AI substitution potential, though desk-based sustainability reporting roles carry more risk.",
+      "story_id": "sus-7",
+      "section": "sustainability"
+    },
+    {
+      "speaker": "B",
+      "text": "Climate Home News reports Canada and the E U launched an Alliance for the Future on critical minerals, grids and storage, along with a joint study on exporting liquefied natural gas to Europe.",
+      "story_id": "sus-8",
+      "section": "sustainability"
+    },
+    {
+      "speaker": "B",
+      "text": "That's Morning Signal for Wednesday. Links to everything are in the app.",
+      "story_id": null,
+      "section": "outro"
+    },
+    {
+      "speaker": "A",
+      "text": "Keep an eye on Antalya next week. I'm Max.",
+      "story_id": null,
+      "section": "outro"
+    },
+    {
+      "speaker": "B",
+      "text": "And I'm Nova. Have a good morning.",
+      "story_id": null,
+      "section": "outro"
+    }
+  ]
+}

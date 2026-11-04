@@ -1,0 +1,807 @@
+<title>Morning Signal</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Daily two-host briefing on AI, media &amp; creative industries, and sustainability.">
+<meta name="theme-color" content="#F2F3EE" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#101615" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Signal">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one 640px reading column; a broadcast "console" hero with chapter-marked scrubber,
+   stories as ruled running copy per desk, transcript + archive below, mini-player docks at the bottom. */
+:root {
+  --paper: #F2F3EE;
+  --surface: #FBFCF9;
+  --ink: #17211F;
+  --muted: #56625E;
+  --rule: #D5DAD2;
+  --accent: #0E6870;
+  --accent-ink: #FFFFFF;
+  --onair: #B86A06;
+  --tint: #E3ECE9;
+  --ai: #5A3FCB;
+  --media: #A92D63;
+  --sus: #2C7448;
+  --shadow: 0 1px 0 rgba(23,33,31,.04), 0 10px 30px -18px rgba(23,33,31,.35);
+  --f-display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Source Serif 4", Charter, "Iowan Old Style", Georgia, serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #101615; --surface: #172020; --ink: #E7ECE7; --muted: #9AA6A1; --rule: #2A3533;
+    --accent: #5CC3C9; --accent-ink: #0B1212; --onair: #F0B04F; --tint: #1D2C2B;
+    --ai: #A897FF; --media: #F17DAB; --sus: #6CCB8F;
+    --shadow: 0 1px 0 rgba(0,0,0,.3), 0 14px 34px -20px rgba(0,0,0,.8);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #101615; --surface: #172020; --ink: #E7ECE7; --muted: #9AA6A1; --rule: #2A3533;
+  --accent: #5CC3C9; --accent-ink: #0B1212; --onair: #F0B04F; --tint: #1D2C2B;
+  --ai: #A897FF; --media: #F17DAB; --sus: #6CCB8F;
+  --shadow: 0 1px 0 rgba(0,0,0,.3), 0 14px 34px -20px rgba(0,0,0,.8);
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 400 1.0625rem/1.55 var(--f-body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 calc(120px + env(safe-area-inset-bottom, 0px));
+  overflow-x: hidden;
+}
+.wrap { max-width: 640px; margin: 0 auto; display: grid; gap: 40px; }
+a { color: inherit; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; }
+.mono { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+.eyebrow {
+  font: 500 .75rem/1.2 var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted);
+}
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* Masthead */
+.mast { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 20px; }
+.brand { display: flex; align-items: center; gap: 10px; font: 700 1.125rem/1 var(--f-display); letter-spacing: -.01em; }
+.brand svg { width: 28px; height: 28px; flex: none; }
+.mast .eyebrow { text-align: right; white-space: nowrap; }
+#main { display: grid; gap: 40px; min-width: 0; }
+
+/* Hero / console */
+.hero {
+  background: var(--surface); border: 1px solid var(--rule); border-radius: 22px;
+  box-shadow: var(--shadow); padding: 22px 18px 18px; display: grid; gap: 18px;
+}
+.hero-meta { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; }
+.onair {
+  display: inline-flex; align-items: center; gap: 6px; font: 500 .75rem/1 var(--f-mono);
+  letter-spacing: .12em; text-transform: uppercase; color: var(--onair);
+}
+.onair::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+.playing .onair::before { animation: pulse 1.6s ease-in-out infinite; }
+@keyframes pulse { 50% { opacity: .25; } }
+.hero h1 { font-size: clamp(1.75rem, 7.4vw, 2.5rem); line-height: 1.05; letter-spacing: -.025em; font-weight: 700; }
+.tagline { margin: 0; font-size: 1.125rem; color: var(--muted); font-style: italic; }
+
+.transport { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; }
+.btn-round {
+  appearance: none; border: 0; background: transparent; cursor: pointer; border-radius: 999px;
+  min-width: 56px; min-height: 56px; display: inline-grid; place-items: center; position: relative;
+}
+.btn-skip { justify-self: center; color: var(--ink); }
+.btn-skip svg { width: 42px; height: 42px; }
+.btn-play { width: 84px; height: 84px; background: var(--ink); color: var(--paper); box-shadow: var(--shadow); transition: transform .15s; }
+.btn-play:active { transform: scale(.96); }
+.btn-play svg { width: 34px; height: 34px; }
+.btn-play .i-pause, .playing .btn-play .i-play, .playing .mini-play .i-play { display: none; }
+.playing .btn-play .i-pause, .playing .mini-play .i-pause { display: block; }
+.mini-play .i-pause { display: none; }
+
+/* Scrubber */
+.scrub { display: grid; gap: 6px; }
+.track { position: relative; height: 44px; }
+.track-bg, .track-fill {
+  position: absolute; left: 0; top: 50%; height: 6px; margin-top: -3px; border-radius: 3px; pointer-events: none;
+}
+.track-bg { right: 0; background: var(--rule); }
+.track-fill { width: 0; background: var(--accent); }
+.ticks { position: absolute; inset: 0; pointer-events: none; }
+.tick { position: absolute; top: 50%; width: 3px; height: 14px; margin: -7px 0 0 -1.5px; border-radius: 2px; background: var(--muted); }
+.tick.ai { background: var(--ai); } .tick.media { background: var(--media); } .tick.sustainability { background: var(--sus); }
+.track input[type="range"] {
+  position: absolute; inset: 0; width: 100%; height: 44px; margin: 0; background: transparent;
+  -webkit-appearance: none; appearance: none; cursor: pointer;
+}
+.track input[type="range"]::-webkit-slider-runnable-track { height: 44px; background: transparent; }
+.track input[type="range"]::-moz-range-track { height: 44px; background: transparent; }
+.track input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 20px; height: 20px; margin-top: 12px; border-radius: 50%;
+  background: var(--accent); border: 3px solid var(--surface); box-shadow: 0 0 0 1px var(--accent);
+}
+.track input[type="range"]::-moz-range-thumb {
+  width: 16px; height: 16px; border-radius: 50%; background: var(--accent); border: 3px solid var(--surface);
+}
+.track input[type="range"]:focus-visible { outline: none; }
+.track input[type="range"]:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px var(--accent); }
+.times { display: flex; justify-content: space-between; font: 400 .8125rem/1 var(--f-mono); font-variant-numeric: tabular-nums; color: var(--muted); }
+.now-story { min-height: 1.4em; font: 500 .875rem/1.4 var(--f-display); color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.now-story b { color: var(--ink); font-weight: 500; }
+
+.tools { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; border-top: 1px solid var(--rule); padding-top: 14px; }
+.speeds { display: flex; border: 1px solid var(--rule); border-radius: 999px; padding: 2px; }
+.speeds button {
+  appearance: none; border: 0; background: transparent; cursor: pointer; min-width: 48px; min-height: 40px;
+  border-radius: 999px; font: 500 .8125rem/1 var(--f-mono); color: var(--muted);
+}
+.speeds button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.dl {
+  display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px; border-radius: 999px;
+  border: 1px solid var(--rule); text-decoration: none; font: 500 .875rem/1 var(--f-display);
+}
+.dl svg { width: 18px; height: 18px; }
+.dl:hover { border-color: var(--ink); }
+
+/* Sections + stories */
+.desk { display: grid; gap: 4px; }
+.desk-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding-bottom: 10px; border-bottom: 2px solid var(--ink); }
+.desk-head h2 { font-size: 1.5rem; letter-spacing: -.015em; display: flex; align-items: center; gap: 10px; }
+.desk-head h2::before { content: ""; width: 12px; height: 12px; border-radius: 3px; background: var(--c, var(--muted)); }
+.desk[data-id="ai"] { --c: var(--ai); } .desk[data-id="media"] { --c: var(--media); } .desk[data-id="sustainability"] { --c: var(--sus); }
+.stories { list-style: none; margin: 0; padding: 0; }
+.story {
+  padding: 20px 12px; margin: 0 -12px; border-bottom: 1px solid var(--rule); border-radius: 14px;
+  display: grid; gap: 10px; transition: background-color .3s; scroll-margin-top: 20px;
+}
+.story:last-child { border-bottom: 0; }
+.story.is-live { background: var(--tint); border-bottom-color: transparent; }
+.story-top { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
+.story .src { font: 500 .8125rem/1.3 var(--f-mono); color: var(--muted); }
+.live-pill { display: none; font: 500 .6875rem/1 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--onair); }
+.story.is-live .live-pill { display: inline-flex; align-items: center; gap: 5px; }
+.live-pill::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.story h3 { font-size: 1.25rem; line-height: 1.2; letter-spacing: -.01em; font-weight: 700; }
+.story p { margin: 0; max-width: 65ch; }
+.why { font-size: 1rem; color: var(--ink); }
+.why b { font: 500 .75rem/1 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--c, var(--muted)); margin-right: 6px; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.tag {
+  font: 500 .75rem/1 var(--f-mono); padding: 5px 8px; border-radius: 6px; border: 1px solid var(--rule); color: var(--muted);
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.tag::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--tc, var(--muted)); }
+.tag.ai { --tc: var(--ai); } .tag.media { --tc: var(--media); } .tag.sustainability { --tc: var(--sus); }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  appearance: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px;
+  border-radius: 999px; font: 500 .875rem/1 var(--f-display); text-decoration: none; border: 1px solid var(--rule); background: transparent;
+}
+.chip.read { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.chip.listen { color: var(--accent); border-color: currentColor; }
+.chip .mono { font-size: .8125rem; opacity: .8; }
+
+/* Transcript */
+.panel { border-top: 2px solid var(--ink); }
+.panel-toggle {
+  appearance: none; border: 0; background: transparent; cursor: pointer; width: 100%; min-height: 56px;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 0; text-align: left;
+}
+.panel-toggle h2 { font-size: 1.5rem; letter-spacing: -.015em; }
+.panel-toggle svg { width: 22px; height: 22px; transition: transform .2s; flex: none; }
+.panel-toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
+.transcript { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.line {
+  appearance: none; border: 0; background: transparent; cursor: pointer; width: 100%; text-align: left;
+  display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 10px; padding: 10px 8px; border-radius: 10px; min-height: 44px;
+}
+.line:hover { background: var(--tint); }
+.line.is-live { background: var(--tint); }
+.line .t { font: 400 .75rem/1.9 var(--f-mono); font-variant-numeric: tabular-nums; color: var(--muted); }
+.line .who { display: block; font: 500 .75rem/1.6 var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.line.b .who { color: var(--onair); }
+.line .say { font-size: 1rem; line-height: 1.5; }
+
+/* Archive */
+.archive { list-style: none; margin: 0; padding: 0; }
+.archive button {
+  appearance: none; border: 0; border-bottom: 1px solid var(--rule); background: transparent; cursor: pointer; width: 100%;
+  text-align: left; padding: 14px 0; min-height: 56px; display: grid; grid-template-columns: 84px minmax(0, 1fr) auto; gap: 12px; align-items: baseline;
+}
+.archive button[aria-current="true"] .a-title { color: var(--accent); }
+.archive .a-date { font: 500 .8125rem/1.4 var(--f-mono); color: var(--muted); }
+.archive .a-title { font: 700 1.0625rem/1.25 var(--f-display); display: block; }
+.archive .a-tag { font-size: .9375rem; color: var(--muted); display: block; margin-top: 2px; }
+.archive .a-dur { font: 400 .8125rem/1.4 var(--f-mono); color: var(--muted); }
+.archive-h { font-size: 1.5rem; letter-spacing: -.015em; padding-bottom: 10px; border-bottom: 2px solid var(--ink); }
+
+/* States */
+.state { padding: 48px 0; display: grid; gap: 12px; justify-items: start; }
+.state h2 { font-size: 1.5rem; }
+.state p { margin: 0; color: var(--muted); max-width: 46ch; }
+.btn-text {
+  appearance: none; border: 1px solid var(--ink); background: transparent; cursor: pointer; border-radius: 999px;
+  min-height: 44px; padding: 0 18px; font: 500 .9375rem/1 var(--f-display);
+}
+.skeleton { display: grid; gap: 12px; }
+.skeleton i { display: block; height: 14px; border-radius: 7px; background: var(--rule); animation: shimmer 1.4s ease-in-out infinite; }
+.skeleton i:nth-child(1) { width: 40%; } .skeleton i:nth-child(2) { width: 85%; height: 30px; } .skeleton i:nth-child(3) { width: 65%; }
+@keyframes shimmer { 50% { opacity: .45; } }
+
+footer { color: var(--muted); font-size: .875rem; padding-top: 8px; }
+
+/* Mini player */
+.mini {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
+  background: var(--surface); border-top: 1px solid var(--rule); box-shadow: 0 -10px 30px -20px rgba(0,0,0,.4);
+  padding: 8px max(16px, env(safe-area-inset-right, 0px)) calc(8px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+  transform: translateY(110%); transition: transform .25s ease;
+}
+.mini.show { transform: none; }
+.mini-in { max-width: 640px; margin: 0 auto; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px; }
+.mini-play { width: 48px; height: 48px; min-width: 48px; min-height: 48px; background: var(--ink); color: var(--paper); }
+.mini-play svg { width: 22px; height: 22px; }
+.mini-text { min-width: 0; }
+.mini-title { font: 700 .9375rem/1.25 var(--f-display); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mini-bar { height: 3px; background: var(--rule); border-radius: 2px; margin-top: 6px; overflow: hidden; }
+.mini-bar i { display: block; height: 100%; width: 0; background: var(--accent); }
+.mini-time { font: 400 .8125rem/1 var(--f-mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+@media (min-width: 560px) {
+  .hero { padding: 30px 28px 22px; }
+}
+</style>
+
+<div class="wrap">
+  <header class="mast">
+    <div class="brand">
+      <svg viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="112" fill="var(--ink)"/><path d="M96 330h320" stroke="var(--paper)" stroke-width="22" stroke-linecap="round"/><path d="M176 330a80 80 0 0 1 160 0" fill="var(--onair)"/><path d="M136 262a136 136 0 0 1 240 0" fill="none" stroke="var(--paper)" stroke-width="20" stroke-linecap="round" opacity=".7"/></svg>
+      <span>Morning Signal</span>
+    </div>
+    <div class="eyebrow" id="mast-date">AI · Media · Sustainability</div>
+  </header>
+
+  <main id="main" aria-live="polite">
+    <div class="state" id="loading">
+      <div class="skeleton" style="width:100%" aria-hidden="true"><i></i><i></i><i></i></div>
+      <p>Tuning in to this morning’s briefing…</p>
+    </div>
+  </main>
+
+  <section id="archive-wrap" hidden aria-labelledby="archive-h">
+    <h2 class="archive-h" id="archive-h">Earlier episodes</h2>
+    <ul class="archive" id="archive"></ul>
+  </section>
+
+  <footer>Morning Signal is assembled each morning from published reporting. Summaries link to the original articles; read them for the full story.</footer>
+</div>
+
+<div class="mini" id="mini" aria-hidden="true">
+  <div class="mini-in">
+    <button class="btn-round mini-play" id="mini-play" type="button" aria-label="Play" tabindex="-1">
+      <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l13-7.5z" fill="currentColor"/></svg>
+      <svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h4.5v16H6zM13.5 4H18v16h-4.5z" fill="currentColor"/></svg>
+    </button>
+    <div class="mini-text">
+      <div class="mini-title" id="mini-title"></div>
+      <div class="mini-bar"><i id="mini-fill"></i></div>
+    </div>
+    <span class="mini-time" id="mini-time">0:00</span>
+  </div>
+</div>
+
+<audio id="audio" preload="metadata"></audio>
+
+<script>
+(() => {
+  "use strict";
+  const $ = (s, r = document) => r.querySelector(s);
+  const audio = $("#audio");
+  const main = $("#main");
+  const SPEEDS = [1, 1.25, 1.5, 2];
+  const DESK_NAMES = { ai: "AI", media: "Media & Creative", sustainability: "Sustainability", crossover: "Crossover" };
+
+  const store = {
+    get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+    set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} },
+    del(k) { try { localStorage.removeItem(k); } catch (e) {} }
+  };
+
+  let index = [];
+  let ep = null;          // current episode.json
+  let epBase = "";        // folder URL of current episode
+  let stories = [];       // flat, with start_sec, sorted
+  let lineEls = [];
+  let storyEls = new Map();
+  let liveStoryId = null, liveLine = -1;
+  let lastSave = 0;
+  let seeking = false;
+  let loadToken = 0;
+
+  const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const safeUrl = (u) => { try { const x = new URL(u, location.href); return /^https?:$/.test(x.protocol) ? x.href : null; } catch (e) { return null; } };
+  const fmt = (s) => {
+    if (!isFinite(s) || s < 0) s = 0;
+    s = Math.floor(s);
+    const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), sec = String(s % 60).padStart(2, "0");
+    return h ? `${h}:${String(m).padStart(2, "0")}:${sec}` : `${m}:${sec}`;
+  };
+  const fmtMins = (s) => (isFinite(s) && s > 0) ? `${Math.max(1, Math.round(s / 60))} min` : "";
+  const parseDate = (d) => { const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(d || ""); return m ? new Date(+m[1], m[2] - 1, +m[3]) : null; };
+  const longDate = (d) => { const x = parseDate(d); return x ? x.toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "long" }) : (d || ""); };
+  const shortDate = (d) => { const x = parseDate(d); return x ? x.toLocaleDateString(undefined, { day: "numeric", month: "short" }) : (d || ""); };
+  const deskName = (id, name) => name || DESK_NAMES[id] || id;
+  const dur = () => (isFinite(audio.duration) && audio.duration > 0) ? audio.duration : (ep && +ep.duration_sec) || 0;
+
+  const ICON = {
+    back: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4.5A8.5 8.5 0 1 1 4.64 8.75M14.5 2 12 4.5 14.5 7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="15.6" text-anchor="middle" font-size="7" font-weight="500" fill="currentColor" font-family="IBM Plex Mono, ui-monospace, monospace">15</text></svg>',
+    fwd: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4.5A8.5 8.5 0 1 0 19.36 8.75M9.5 2 12 4.5 9.5 7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="15.6" text-anchor="middle" font-size="7" font-weight="500" fill="currentColor" font-family="IBM Plex Mono, ui-monospace, monospace">30</text></svg>',
+    play: '<svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l13-7.5z" fill="currentColor"/></svg>',
+    pause: '<svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h4.5v16H6zM13.5 4H18v16h-4.5z" fill="currentColor"/></svg>',
+    dl: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 20h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    chev: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+  };
+
+  /* ---------- states ---------- */
+  function showState(title, msg, retry) {
+    main.innerHTML = `<div class="state"><h2>${esc(title)}</h2><p>${esc(msg)}</p>${retry ? '<button class="btn-text" type="button" id="retry">Try again</button>' : ""}</div>`;
+    if (retry) $("#retry").addEventListener("click", retry);
+  }
+  function showLoading(msg) {
+    main.innerHTML = `<div class="state"><div class="skeleton" style="width:100%" aria-hidden="true"><i></i><i></i><i></i></div><p>${esc(msg)}</p></div>`;
+  }
+
+  async function getJSON(url) {
+    const r = await fetch(url, { cache: "no-cache" });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    return r.json();
+  }
+
+  /* ---------- boot ---------- */
+  async function boot() {
+    showLoading("Tuning in to this morning’s briefing…");
+    try {
+      const data = await getJSON("episodes/index.json");
+      index = (data && Array.isArray(data.episodes)) ? data.episodes.filter(e => e && e.date) : [];
+    } catch (e) {
+      showState("The episode list didn’t load", `episodes/index.json could not be read (${e.message}). Check your connection, or that the episodes folder is published next to this page.`, boot);
+      return;
+    }
+    index.sort((a, b) => String(b.date).localeCompare(String(a.date)));
+    if (!index.length) {
+      showState("No episodes yet", "The first briefing appears here as soon as the morning build finishes. Check back shortly.", boot);
+      return;
+    }
+    const want = /^#ep-(\d{4}-\d{2}-\d{2})$/.exec(location.hash);
+    const pick = (want && index.find(e => e.date === want[1])) || index[0];
+    loadEpisode(pick, false);
+  }
+
+  function folderOf(entry) {
+    let p = entry.path || `${entry.date}/`;
+    if (!p.endsWith("/")) p += "/";
+    return "episodes/" + p.replace(/^\.?\//, "");
+  }
+
+  async function loadEpisode(entry, userInitiated) {
+    const token = ++loadToken;
+    savePos(true);
+    audio.pause();
+    showLoading(`Loading the ${longDate(entry.date)} episode…`);
+    renderArchive(entry.date);
+    const base = folderOf(entry);
+    let data;
+    try {
+      data = await getJSON(base + "episode.json");
+    } catch (e) {
+      if (token !== loadToken) return;
+      showState("This episode didn’t load", `${base}episode.json could not be read (${e.message}). Try again, or pick another day below.`, () => loadEpisode(entry, userInitiated));
+      return;
+    }
+    if (token !== loadToken) return;
+    ep = data; epBase = base;
+    ep.date = ep.date || entry.date;
+    ep.title = ep.title || entry.title || "Morning Signal";
+    ep.tagline = ep.tagline || entry.tagline || "";
+    if (!ep.duration_sec) ep.duration_sec = entry.duration_sec;
+    try { history.replaceState(null, "", entry === index[0] ? location.pathname + location.search : "#ep-" + ep.date); } catch (e) {}
+    render();
+    if (userInitiated) window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  /* ---------- render ---------- */
+  function render() {
+    const sections = Array.isArray(ep.sections) ? ep.sections : [];
+    stories = [];
+    sections.forEach(sec => (sec.stories || []).forEach(st => {
+      if (st && typeof st.start_sec === "number" && isFinite(st.start_sec)) stories.push({ id: st.id, start: st.start_sec, section: sec.id, headline: st.headline });
+    }));
+    stories.sort((a, b) => a.start - b.start);
+    const audioUrl = epBase + (ep.audio || "episode.mp3");
+    const isLatest = index[0] && index[0].date === ep.date;
+    { const x = parseDate(ep.date); $("#mast-date").textContent = x ? x.toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" }) : ep.date; }
+
+    let html = `
+    <section class="hero" id="hero" aria-label="Episode player">
+      <div class="hero-meta">
+        <span class="onair">${isLatest ? "Today’s episode" : "From the archive"}</span>
+        <span class="eyebrow">${esc(longDate(ep.date))}${ep.duration_sec ? " · " + esc(fmtMins(+ep.duration_sec)) : ""}</span>
+      </div>
+      <div style="display:grid;gap:10px">
+        <h1>${esc(ep.title)}</h1>
+        ${ep.tagline ? `<p class="tagline">${esc(ep.tagline)}</p>` : ""}
+      </div>
+      <div class="transport">
+        <button class="btn-round btn-skip" type="button" id="back" aria-label="Back 15 seconds">${ICON.back}</button>
+        <button class="btn-round btn-play" type="button" id="play" aria-label="Play episode">${ICON.play}${ICON.pause}</button>
+        <button class="btn-round btn-skip" type="button" id="fwd" aria-label="Forward 30 seconds">${ICON.fwd}</button>
+      </div>
+      <div class="scrub">
+        <div class="track">
+          <div class="track-bg"></div><div class="track-fill" id="fill"></div>
+          <div class="ticks" id="ticks"></div>
+          <input type="range" id="seek" min="0" max="1000" step="1" value="0" aria-label="Seek" aria-valuetext="0:00">
+        </div>
+        <div class="times"><span id="elapsed">0:00</span><span id="remaining">-${fmt(+ep.duration_sec || 0)}</span></div>
+        <div class="now-story" id="now-story">&nbsp;</div>
+      </div>
+      <div class="tools">
+        <div class="speeds" role="group" aria-label="Playback speed">
+          ${SPEEDS.map(s => `<button type="button" data-speed="${s}" aria-pressed="false" aria-label="${s} times speed">${s}×</button>`).join("")}
+        </div>
+        <a class="dl" id="dl" href="${esc(audioUrl)}" download="morning-signal-${esc(ep.date)}.mp3">${ICON.dl}Download MP3</a>
+      </div>
+    </section>`;
+
+    sections.forEach(sec => {
+      const list = (sec.stories || []).filter(Boolean);
+      if (!list.length) return;
+      const n = list.length;
+      html += `<section class="desk" data-id="${esc(sec.id)}" aria-labelledby="desk-${esc(sec.id)}">
+        <div class="desk-head"><h2 id="desk-${esc(sec.id)}">${esc(deskName(sec.id, sec.name))}</h2><span class="eyebrow">${n} ${n === 1 ? "story" : "stories"}</span></div>
+        <ul class="stories">${list.map(st => storyHTML(st)).join("")}</ul>
+      </section>`;
+    });
+    if (!sections.some(s => (s.stories || []).length)) {
+      html += `<div class="state"><h2>No stories listed</h2><p>This episode has audio but no story list. The full transcript is below.</p></div>`;
+    }
+
+    const tr = Array.isArray(ep.transcript) ? ep.transcript : [];
+    if (tr.length) {
+      const hostB = ep.hosts && ep.hosts.B && ep.hosts.B.name;
+      html += `<section class="panel" aria-label="Transcript">
+        <button class="panel-toggle" type="button" id="tr-toggle" aria-expanded="false" aria-controls="transcript">
+          <h2>Transcript</h2><span style="display:flex;align-items:center;gap:8px"><span class="eyebrow" id="tr-hint">Show</span>${ICON.chev}</span>
+        </button>
+        <ol class="transcript" id="transcript" hidden>
+          ${tr.map((l, i) => `<li><button class="line${hostB && l.speaker === hostB ? " b" : ""}" type="button" data-i="${i}" data-t="${+l.start_sec || 0}" aria-label="Play from ${fmt(+l.start_sec || 0)}, ${esc(l.speaker)}">
+            <span class="t">${fmt(+l.start_sec || 0)}</span>
+            <span><span class="who">${esc(l.speaker)}</span><span class="say">${esc(l.text)}</span></span>
+          </button></li>`).join("")}
+        </ol>
+      </section>`;
+    }
+    main.innerHTML = html;
+    lineEls = [...main.querySelectorAll(".line")];
+    storyEls = new Map([...main.querySelectorAll(".story[data-id]")].map(el => [el.dataset.id, el]));
+    liveStoryId = null; liveLine = -1;
+    wireEpisode(audioUrl);
+  }
+
+  function storyHTML(st) {
+    const url = safeUrl(st.url);
+    const tags = (Array.isArray(st.crossover) ? st.crossover : []).filter(Boolean);
+    const hasStart = typeof st.start_sec === "number" && isFinite(st.start_sec);
+    const pub = st.published ? shortDate(st.published) : "";
+    return `<li class="story" data-id="${esc(st.id)}" id="story-${esc(st.id)}">
+      <div class="story-top"><span class="src">${esc(st.source || "")}${pub ? " · " + esc(pub) : ""}</span><span class="live-pill">On air</span></div>
+      <h3>${esc(st.headline)}</h3>
+      ${st.summary ? `<p>${esc(st.summary)}</p>` : ""}
+      ${st.why_it_matters ? `<p class="why"><b>Why it matters</b>${esc(st.why_it_matters)}</p>` : ""}
+      ${tags.length ? `<div class="tags" aria-label="Also relevant to">${tags.map(t => `<span class="tag ${esc(t)}">${esc(deskName(t))}</span>`).join("")}</div>` : ""}
+      <div class="actions">
+        ${hasStart ? `<button class="chip listen" type="button" data-seek="${st.start_sec}" aria-label="Listen to this story, from ${fmt(st.start_sec)}">▶ Listen <span class="mono">${fmt(st.start_sec)}</span></button>` : ""}
+        ${url ? `<a class="chip read" href="${esc(url)}" target="_blank" rel="noopener">Read article ↗<span class="sr"> (opens ${esc(st.source || "source")} in a new tab)</span></a>` : ""}
+      </div>
+    </li>`;
+  }
+
+  function renderArchive(currentDate) {
+    const wrap = $("#archive-wrap"), ul = $("#archive");
+    if (index.length < 2) { wrap.hidden = true; return; }
+    wrap.hidden = false;
+    $("#archive-h").textContent = "All episodes";
+    ul.innerHTML = index.map(e => `<li><button type="button" data-date="${esc(e.date)}" aria-current="${e.date === currentDate}">
+      <span class="a-date">${esc(shortDate(e.date))}</span>
+      <span style="min-width:0"><span class="a-title">${esc(e.title || "Morning Signal")}</span>${e.tagline ? `<span class="a-tag">${esc(e.tagline)}</span>` : ""}</span>
+      <span class="a-dur">${esc(fmtMins(+e.duration_sec))}</span>
+    </button></li>`).join("");
+  }
+  $("#archive").addEventListener("click", (ev) => {
+    const b = ev.target.closest("button[data-date]");
+    if (!b) return;
+    const entry = index.find(e => e.date === b.dataset.date);
+    if (entry && (!ep || entry.date !== ep.date)) loadEpisode(entry, true);
+  });
+
+  /* ---------- player ---------- */
+  const posKey = () => ep ? `morning-signal:pos:${ep.date}` : null;
+  function savePos(force) {
+    if (!ep || !audio.src) return;
+    const now = Date.now();
+    if (!force && now - lastSave < 4000) return;
+    lastSave = now;
+    const t = audio.currentTime, d = dur();
+    if (d && t > d - 15) store.del(posKey());
+    else if (t > 3) store.set(posKey(), String(Math.round(t)));
+  }
+
+  function wireEpisode(audioUrl) {
+    if (blobUrl) { URL.revokeObjectURL(blobUrl); blobUrl = null; }
+    pendingSeek = null;
+    audio.src = audioUrl;
+    const speed = +store.get("morning-signal:speed");
+    audio.playbackRate = SPEEDS.includes(speed) ? speed : 1;
+    audio.defaultPlaybackRate = audio.playbackRate;
+    const saved = +store.get(posKey());
+    if (saved > 0) {
+      audio.addEventListener("loadedmetadata", () => {
+        if (saved < dur() - 10) seekTo(saved, false);
+      }, { once: true });
+    }
+    $("#play").addEventListener("click", toggle);
+    $("#back").addEventListener("click", () => skip(-15));
+    $("#fwd").addEventListener("click", () => skip(30));
+    const seek = $("#seek");
+    seek.addEventListener("input", () => { seeking = true; const d = dur(); if (d) { const t = seek.value / 1000 * d; paintProgress(t); } });
+    seek.addEventListener("change", () => { const d = dur(); if (d) seekTo(seek.value / 1000 * d, false); seeking = false; });
+    main.querySelectorAll(".speeds button").forEach(b => b.addEventListener("click", () => setSpeed(+b.dataset.speed)));
+    const tt = $("#tr-toggle");
+    if (tt) tt.addEventListener("click", () => {
+      const open = tt.getAttribute("aria-expanded") !== "true";
+      tt.setAttribute("aria-expanded", String(open));
+      $("#transcript").hidden = !open;
+      $("#tr-hint").textContent = open ? "Hide" : "Show";
+      store.set("morning-signal:transcript", open ? "1" : "0");
+      if (open && liveLine >= 0) lineEls[liveLine].scrollIntoView({ block: "nearest" });
+    });
+    if (tt && store.get("morning-signal:transcript") === "1") tt.click();
+    drawTicks();
+    paintSpeed();
+    $("#mini-title").textContent = ep.title;
+    updateTime();
+    syncPlaying();
+    setMediaMetadata();
+    observeHero();
+  }
+
+  function onMainClick(ev) {
+    const chip = ev.target.closest("[data-seek]");
+    if (chip) { seekTo(+chip.dataset.seek, true); return; }
+    const line = ev.target.closest(".line[data-t]");
+    if (line) { seekTo(+line.dataset.t, true); }
+  }
+
+  function drawTicks() {
+    const box = $("#ticks"), d = +ep.duration_sec || 0;
+    if (!box || !d) return;
+    box.innerHTML = stories.map(s => `<span class="tick ${esc(s.section)}" style="left:${Math.min(100, s.start / d * 100).toFixed(2)}%"></span>`).join("");
+  }
+
+  function play() {
+    const p = audio.play();
+    if (p && p.catch) p.catch(err => { if (err && err.name !== "AbortError") flashNow("Audio couldn’t start. Check that episode.mp3 is available."); });
+  }
+  function toggle() { audio.paused ? play() : audio.pause(); }
+  function skip(delta) { seekTo(audio.currentTime + delta, false); }
+  function seekTo(t, andPlay) {
+    const d = dur();
+    t = Math.max(0, d ? Math.min(t, d - 0.25) : t);
+    if (audio.readyState >= 1 && !canSeek(t) && !String(audio.currentSrc).startsWith("blob:")) { loadWhole(t, andPlay); return; }
+    try { audio.currentTime = t; } catch (e) {}
+    if (audio.readyState >= 1) verifySeek(t, andPlay);
+    updateTime(t);
+    if (andPlay && audio.paused) play();
+    savePos(true);
+  }
+  function canSeek(t) {
+    const r = audio.seekable;
+    for (let i = 0; i < r.length; i++) if (t >= r.start(i) - 0.5 && t <= r.end(i) + 0.5) return true;
+    return false;
+  }
+  /* Some static hosts ignore HTTP Range requests, so the browser can't jump ahead in the stream.
+     If a seek doesn't land, fetch the whole MP3 once and play it from memory. */
+  function verifySeek(t, andPlay) {
+    if (String(audio.currentSrc).startsWith("blob:") || t < 2) return;
+    audio.addEventListener("seeked", () => {
+      if (Math.abs(audio.currentTime - t) > 2) loadWhole(t, andPlay || !audio.paused);
+    }, { once: true });
+  }
+  let wholeJob = null, blobUrl = null;
+  function loadWhole(t, andPlay) {
+    pendingSeek = { t, andPlay: andPlay || !audio.paused };
+    if (wholeJob) return;
+    const src = audio.currentSrc || audio.src, date = ep && ep.date;
+    flashNow("Loading the full episode so you can jump around…");
+    wholeJob = fetch(src).then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.blob(); }).then(b => {
+      if (!ep || ep.date !== date) return;
+      if (blobUrl) URL.revokeObjectURL(blobUrl);
+      blobUrl = URL.createObjectURL(b);
+      const rate = audio.playbackRate;
+      audio.src = blobUrl;
+      audio.playbackRate = rate; audio.defaultPlaybackRate = rate;
+      audio.addEventListener("loadedmetadata", () => {
+        const p = pendingSeek; pendingSeek = null;
+        if (p) { try { audio.currentTime = p.t; } catch (e) {} updateTime(p.t); if (p.andPlay) play(); }
+        liveStoryId = "\u0000"; updateTime();
+      }, { once: true });
+    }).catch(() => flashNow("This host can’t jump within the audio. Use play and the skip buttons instead."))
+      .finally(() => { wholeJob = null; });
+  }
+  let pendingSeek = null;
+  function setSpeed(s) {
+    audio.playbackRate = s; audio.defaultPlaybackRate = s;
+    store.set("morning-signal:speed", String(s));
+    paintSpeed();
+  }
+  function paintSpeed() {
+    main.querySelectorAll(".speeds button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.speed === audio.playbackRate)));
+  }
+  function flashNow(msg) { const n = $("#now-story"); if (n) n.textContent = msg; }
+
+  function paintProgress(t) {
+    const d = dur(), pct = d ? Math.min(100, t / d * 100) : 0;
+    const fill = $("#fill"); if (fill) fill.style.width = pct + "%";
+    $("#mini-fill").style.width = pct + "%";
+    const el = $("#elapsed"); if (el) el.textContent = fmt(t);
+    const rem = $("#remaining"); if (rem) rem.textContent = "-" + fmt(Math.max(0, d - t));
+    $("#mini-time").textContent = fmt(t);
+    const seek = $("#seek");
+    if (seek) {
+      if (!seeking) seek.value = String(Math.round(pct * 10));
+      seek.setAttribute("aria-valuetext", `${fmt(t)} of ${fmt(d)}`);
+    }
+  }
+
+  function updateTime(forced) {
+    if (!ep) return;
+    const t = typeof forced === "number" ? forced : audio.currentTime;
+    if (!seeking) paintProgress(t);
+    // current story: latest start <= t (stories hold the floor until the next one starts)
+    let cur = null;
+    for (const s of stories) { if (s.start <= t + 0.25) cur = s; else break; }
+    const started = t > 0.5 || !audio.paused;
+    const id = cur && started ? cur.id : null;
+    if (id !== liveStoryId) {
+      if (liveStoryId && storyEls.get(liveStoryId)) storyEls.get(liveStoryId).classList.remove("is-live");
+      if (id && storyEls.get(id)) storyEls.get(id).classList.add("is-live");
+      liveStoryId = id;
+      const n = $("#now-story");
+      if (n) n.innerHTML = cur && id ? `Now: <b>${esc(cur.headline)}</b>` : "&nbsp;";
+      setMediaMetadata();
+    }
+    // current transcript line
+    let li = -1;
+    for (let i = 0; i < lineEls.length; i++) { if (+lineEls[i].dataset.t <= t + 0.25) li = i; else break; }
+    if (!started) li = -1;
+    if (li !== liveLine) {
+      if (liveLine >= 0 && lineEls[liveLine]) { lineEls[liveLine].classList.remove("is-live"); lineEls[liveLine].removeAttribute("aria-current"); }
+      if (li >= 0) { lineEls[li].classList.add("is-live"); lineEls[li].setAttribute("aria-current", "true"); }
+      liveLine = li;
+    }
+    updatePositionState();
+  }
+
+  function syncPlaying() {
+    const playing = !audio.paused && !audio.ended;
+    document.body.classList.toggle("playing", playing);
+    const pb = $("#play"); if (pb) pb.setAttribute("aria-label", playing ? "Pause episode" : "Play episode");
+    $("#mini-play").setAttribute("aria-label", playing ? "Pause" : "Play");
+    if ("mediaSession" in navigator) navigator.mediaSession.playbackState = playing ? "playing" : "paused";
+  }
+
+  audio.addEventListener("timeupdate", () => { updateTime(); if (!audio.paused) savePos(false); });
+  audio.addEventListener("loadedmetadata", () => { drawTicksReal(); updateTime(); });
+  audio.addEventListener("play", syncPlaying);
+  audio.addEventListener("pause", () => { syncPlaying(); savePos(true); });
+  audio.addEventListener("ended", () => { syncPlaying(); store.del(posKey()); });
+  audio.addEventListener("ratechange", () => { paintSpeed(); updatePositionState(); });
+  audio.addEventListener("error", () => { if (audio.src) flashNow("Audio file unavailable for this episode."); });
+  window.addEventListener("pagehide", () => savePos(true));
+  document.addEventListener("visibilitychange", () => { if (document.hidden) savePos(true); });
+  $("#mini-play").addEventListener("click", toggle);
+  main.addEventListener("click", onMainClick);
+
+  function drawTicksReal() {
+    if (ep && isFinite(audio.duration) && audio.duration > 0) { ep.duration_sec = ep.duration_sec || audio.duration; const box = $("#ticks"); if (box) box.innerHTML = stories.map(s => `<span class="tick ${esc(s.section)}" style="left:${Math.min(100, s.start / audio.duration * 100).toFixed(2)}%"></span>`).join(""); }
+  }
+
+  /* mini player shows once the hero console scrolls away (only after the episode has started) */
+  let heroObs = null, heroVisible = true;
+  function observeHero() {
+    if (heroObs) heroObs.disconnect();
+    const hero = $("#hero");
+    if (!hero || !("IntersectionObserver" in window)) return;
+    heroObs = new IntersectionObserver(([e]) => { heroVisible = e.isIntersecting; paintMini(); });
+    heroObs.observe(hero);
+  }
+  function paintMini() {
+    const show = !heroVisible && ep && (audio.currentTime > 0 || !audio.paused);
+    const mini = $("#mini");
+    mini.classList.toggle("show", !!show);
+    mini.setAttribute("aria-hidden", String(!show));
+    $("#mini-play").tabIndex = show ? 0 : -1;
+  }
+  audio.addEventListener("play", paintMini);
+
+  /* ---------- Media Session ---------- */
+  function setMediaMetadata() {
+    if (!("mediaSession" in navigator) || !ep || typeof MediaMetadata === "undefined") return;
+    const cur = liveStoryId && stories.find(s => s.id === liveStoryId);
+    try {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: cur ? cur.headline : ep.title,
+        artist: "Morning Signal",
+        album: `${longDate(ep.date)} · ${ep.title}`,
+        artwork: [{ src: new URL("icon.svg", location.href).href, sizes: "512x512", type: "image/svg+xml" }]
+      });
+    } catch (e) {}
+  }
+  function updatePositionState() {
+    if (!("mediaSession" in navigator) || !navigator.mediaSession.setPositionState) return;
+    const d = dur();
+    if (!d || !isFinite(audio.duration)) return;
+    try { navigator.mediaSession.setPositionState({ duration: audio.duration, playbackRate: audio.playbackRate || 1, position: Math.min(audio.currentTime, audio.duration) }); } catch (e) {}
+  }
+  function chapter(dir) {
+    const t = audio.currentTime;
+    if (dir > 0) { const n = stories.find(s => s.start > t + 1); if (n) seekTo(n.start, true); }
+    else {
+      const prev = stories.filter(s => s.start < t - 3);
+      seekTo(prev.length ? prev[prev.length - 1].start : 0, true);
+    }
+  }
+  if ("mediaSession" in navigator) {
+    const set = (a, fn) => { try { navigator.mediaSession.setActionHandler(a, fn); } catch (e) {} };
+    set("play", play);
+    set("pause", () => audio.pause());
+    set("seekbackward", (d) => skip(-((d && d.seekOffset) || 15)));
+    set("seekforward", (d) => skip((d && d.seekOffset) || 30));
+    set("seekto", (d) => { if (d && typeof d.seekTime === "number") { if (d.fastSeek && audio.fastSeek) audio.fastSeek(d.seekTime); else seekTo(d.seekTime, false); } });
+    set("previoustrack", () => chapter(-1));
+    set("nexttrack", () => chapter(1));
+  }
+
+  /* keyboard: space / k toggles when focus isn't on a control */
+  document.addEventListener("keydown", (e) => {
+    if (!ep || e.altKey || e.ctrlKey || e.metaKey) return;
+    const tag = (e.target && e.target.tagName) || "";
+    if (/^(INPUT|TEXTAREA|SELECT|BUTTON|A)$/.test(tag)) return;
+    if (e.key === " " || e.key === "k") { e.preventDefault(); toggle(); }
+    else if (e.key === "ArrowLeft" || e.key === "j") skip(-15);
+    else if (e.key === "ArrowRight" || e.key === "l") skip(30);
+  });
+  window.addEventListener("hashchange", () => {
+    const m = /^#ep-(\d{4}-\d{2}-\d{2})$/.exec(location.hash);
+    const entry = m && index.find(e => e.date === m[1]);
+    if (entry && (!ep || ep.date !== entry.date)) loadEpisode(entry, true);
+  });
+
+  boot();
+})();
+</script>
