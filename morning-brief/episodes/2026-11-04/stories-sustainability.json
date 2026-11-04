@@ -4,13 +4,15 @@
   "stories": [
     {
       "id": "sus-1",
-      "headline": "Democrats win Congress in midterms shaped by energy costs and data centres",
+      "headline": "Democrats projected to win Congress in midterms shaped by energy bills and data centres",
       "source": "Inside Climate News",
       "url": "https://insideclimatenews.org/news/04112026/democrats-seize-congress-statehouses-in-referendum-on-the-economy/",
       "published": "2026-11-04",
-      "summary": "Inside Climate News reports that Democrats won control of both houses of Congress and a majority of governorships in the 3 November US midterms. It frames the vote as a referendum on the economy, with voters seeking action on energy costs, corruption and data centres, and says environmentalists believe the result sets the stage for renewed climate policy. It notes Rep. Kathy Castor has been leading work on an economy-and-environment legislative agenda for the new Congress.",
+      "summary": "Inside Climate News reports that Democrats won control of both houses of Congress and a majority of governorships in the 3 November US midterms; these are network projections and some races were still being counted. It frames the vote as a referendum on the economy, with voters seeking action on energy costs, corruption and data centres, and says environmentalists believe the result sets the stage for renewed climate policy. It notes Rep. Kathy Castor has been leading work on an economy-and-environment legislative agenda for the new Congress.",
       "why_it_matters": "Data-centre backlash and power bills became campaign issues, a sign that AI's energy footprint now carries political weight in the US. The new Congress could reopen federal climate and energy policy.",
-      "crossover": ["ai"],
+      "crossover": [
+        "ai"
+      ],
       "kind": "policy",
       "confidence": "medium"
     },
@@ -34,7 +36,9 @@
       "published": "2026-11-02",
       "summary": "Inside Climate News reports that China plans to use its renewable energy sector to compete in building AI data centres, a different path from the US. It is targeting renewables for more than 80 percent of the electricity used by new data centres in its major computing hubs. Its 'East Data, West Computing' initiative, launched in 2022, steers computing infrastructure toward western regions with abundant renewable resources. The article leaves open whether clean power can keep pace with China's computing ambitions.",
       "why_it_matters": "China and the US are taking opposite approaches to powering AI, renewables-led versus heavily gas-backed. That split will help decide how large AI's carbon footprint becomes.",
-      "crossover": ["ai"],
+      "crossover": [
+        "ai"
+      ],
       "kind": "news",
       "confidence": "medium"
     },
@@ -82,7 +86,9 @@
       "published": "2026-11-02",
       "summary": "Trellis covers 'Green Advantage: Employment in an AI-Enabled Economy', a UK report commissioned by Futerra, the Energy and Climate Intelligence Unit and CBI Economics. It finds that 82 percent of green jobs have lower AI substitution potential, against around three in four jobs across the UK workforce, and that 96 percent of green apprenticeships in England lead to jobs harder for AI to replace, against 73 percent overall. The piece flags that corporate sustainability practitioner roles, which are heavy on research and reporting, carry more risk.",
       "why_it_matters": "It argues hands-on climate trades hold up well against automation, while desk-based ESG reporting roles are among those most exposed to AI.",
-      "crossover": ["ai"],
+      "crossover": [
+        "ai"
+      ],
       "kind": "research",
       "confidence": "medium"
     },
