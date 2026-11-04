@@ -1,0 +1,126 @@
+{
+  "desk": "ai",
+  "date": "2026-11-04",
+  "stories": [
+    {
+      "id": "ai-1",
+      "headline": "AI stocks slide as midterm results raise data center risks",
+      "source": "CNBC",
+      "url": "https://www.cnbc.com/2026/11/04/ai-stocks-texas-governor-data-centers.html",
+      "published": "2026-11-04",
+      "summary": "AI-linked shares fell in overnight trading after Democrat Gina Hinojosa was projected to win the Texas governor's race, having campaigned for tougher limits on data center development including a moratorium. CNBC reported CoreWeave down about 7% overnight. Wells Fargo estimates 27% of planned US data center power capacity is in Texas. CNBC's live coverage separately reported Democrats winning big in the midterms, with traders betting this could slow the data center buildout.",
+      "why_it_matters": "Data center power use has become a front-line electoral issue; state-level restrictions in a hub like Texas could reshape where and how fast AI compute gets built.",
+      "crossover": ["sustainability"],
+      "kind": "policy",
+      "confidence": "medium"
+    },
+    {
+      "id": "ai-2",
+      "headline": "Anthropic IPO filing warns self-improving AI threshold may be close",
+      "source": "TechCrunch",
+      "url": "https://techcrunch.com/2026/11/02/anthropic-warns-that-its-very-close-to-rsi-capability-aka-self-building-ai/",
+      "published": "2026-11-02",
+      "summary": "In its amended S-1 filed with the SEC on November 2, Anthropic warned that future models could soon meet its Responsible Scaling Policy threshold for AI-driven acceleration of AI research, sometimes called recursive self-improvement. The filing cautions that using AI to build more capable AI could carry considerable safety risk, and TechCrunch reports Anthropic is considering policy updates to keep humans in control of frontier model development. Coverage notes no current model has been designated as exceeding the threshold.",
+      "why_it_matters": "A frontier lab putting a near-term self-improvement warning into a securities filing makes the risk a formal disclosure, not just a research talking point.",
+      "crossover": [],
+      "kind": "news",
+      "confidence": "medium"
+    },
+    {
+      "id": "ai-3",
+      "headline": "Anthropic reports $17B quarter and $895B in compute commitments",
+      "source": "CNBC",
+      "url": "https://www.cnbc.com/2026/11/02/anthropic-ant-s-1-quarter-financials.html",
+      "published": "2026-11-02",
+      "summary": "Anthropic's revised S-1 shows roughly $17 billion in third-quarter revenue and $33.24 billion for the nine months ended September 30, 2026. The filing lists purchase commitments and lease agreements with aggregate committed spend of about $895.4 billion, 'substantially all of which is related to compute and infrastructure.'",
+      "why_it_matters": "The scale of multi-year compute commitments shows how much of the AI race is now an infrastructure and energy bet, ahead of one of the largest tech IPOs.",
+      "crossover": ["sustainability"],
+      "kind": "news",
+      "confidence": "medium"
+    },
+    {
+      "id": "ai-4",
+      "headline": "Marvell agrees to buy Lumentum for $115 billion",
+      "source": "TechCrunch",
+      "url": "https://techcrunch.com/2026/11/02/in-one-of-the-largest-deals-in-tech-history-marvell-buys-lumentum-for-115b/",
+      "published": "2026-11-02",
+      "summary": "Chipmaker Marvell agreed to acquire optical-component maker Lumentum in an all-stock deal valued at about $115 billion in enterprise value, one of the largest deals in tech history. Lumentum holders receive 4.5 Marvell shares per share. The deal is aimed at AI data center connectivity and is not expected to close until 2028.",
+      "why_it_matters": "Optical interconnect is becoming a key bottleneck in AI data centers, and consolidation here shapes the cost and efficiency of the hardware stack.",
+      "crossover": [],
+      "kind": "deal",
+      "confidence": "medium"
+    },
+    {
+      "id": "ai-5",
+      "headline": "OpenAI pledges to cut data center power use during grid emergencies",
+      "source": "Axios",
+      "url": "https://www.axios.com/2026/11/02/openai-data-center-power-cuts",
+      "published": "2026-11-02",
+      "summary": "OpenAI launched a 'Grid Protectors Program', vowing to reduce electricity use at US data center campuses it directly develops when extreme weather or other emergencies strain the power grid. Axios notes the move comes as public and political backlash over data centers' electricity demand threatens the industry's expansion plans.",
+      "why_it_matters": "Demand flexibility from AI campuses is emerging as the industry's answer to grid-strain and power-bill backlash, a test of whether AI growth and grid reliability can coexist.",
+      "crossover": ["sustainability"],
+      "kind": "launch",
+      "confidence": "medium"
+    },
+    {
+      "id": "ai-6",
+      "headline": "Brookfield plans $27 billion AI data center at Drax power station",
+      "source": "CNBC",
+      "url": "https://www.cnbc.com/2026/11/03/brookfield-ai-data-center-yorkshire-drax.html",
+      "published": "2026-11-03",
+      "summary": "UK energy company Drax signed an agreement with Brookfield and its AI infrastructure platform Radiant to jointly develop an AI data center on the Drax Power Station estate in North Yorkshire, with total investment that could exceed £20 billion ($27 billion). The project targets more than 1GW over three phases, with the first phase subject to planning, regulatory and network approvals and securing a tenant. Drax shares rose 8%.",
+      "why_it_matters": "Repurposing a large power station's grid connection for AI compute is a template for siting data centers, and puts biomass power's carbon credentials under scrutiny.",
+      "crossover": ["sustainability"],
+      "kind": "deal",
+      "confidence": "medium"
+    },
+    {
+      "id": "ai-7",
+      "headline": "Washington Post warns voters off AI chatbots for midterm research",
+      "source": "The Washington Post",
+      "url": "https://www.washingtonpost.com/technology/2026/11/03/doing-last-minute-research-midterms-be-careful-with-ai-chatbots/",
+      "published": "2026-11-03",
+      "summary": "On Election Day the Post cautioned voters against relying on AI chatbots for last-minute midterm research, building on its own test in which six popular chatbots made voter guides for addresses in every US county. That analysis found chatbots invented races, mixed up candidates and cited small websites with incorrect information that appeared to be AI-generated.",
+      "why_it_matters": "Chatbots are becoming a news and civic-information gateway, and errors amplified from AI-generated sites are a direct challenge for journalism and platform trust.",
+      "crossover": ["media"],
+      "kind": "news",
+      "confidence": "medium"
+    },
+    {
+      "id": "ai-8",
+      "headline": "OpenAI signs four Abu Dhabi deals spanning energy and government",
+      "source": "CNBC",
+      "url": "https://www.cnbc.com/2026/11/02/openai-abu-dhabi-ai-deals.html",
+      "published": "2026-11-02",
+      "summary": "OpenAI signed four agreements with Abu Dhabi entities on November 2, covering energy, government and investment. They include a partnership with state oil company ADNOC and G42's Inception42 to deploy OpenAI's technology, a 'Machine-Readable Government' initiative, and an AI investment-analysis deal with Mubadala. The deals come as OpenAI seeks Gulf investors for a reported $20 billion funding round.",
+      "why_it_matters": "Frontier AI is being embedded directly into a national oil company and government operations, tying AI growth to Gulf capital and fossil-fuel industries.",
+      "crossover": ["sustainability"],
+      "kind": "deal",
+      "confidence": "medium"
+    },
+    {
+      "id": "ai-9",
+      "headline": "OpenAI details how it monitors frontier models for misalignment",
+      "source": "OpenAI",
+      "url": "https://openai.com/index/how-we-detect-frontier-model-misalignment/",
+      "published": "2026-10-29",
+      "summary": "OpenAI published an account of its layered approach to detecting misalignment in its most capable models, treating monitoring as one layer of defense-in-depth after alignment training and security controls. A model-based reviewer checks agents' conversations, reasoning and tool use for deception, unauthorized actions or attempts to game evaluations, covering risks such as sandbox escape and exfiltration. OpenAI argues all model developers should monitor their most capable models.",
+      "why_it_matters": "As agents gain autonomy, labs' own monitoring practices become the de facto safety standard regulators and customers will judge them against.",
+      "crossover": [],
+      "kind": "research",
+      "confidence": "medium"
+    },
+    {
+      "id": "ai-10",
+      "headline": "Study: AI sped up a research sprint but hurt team research",
+      "source": "arXiv",
+      "url": "https://arxiv.org/abs/2611.03946",
+      "published": "2026-11-02",
+      "summary": "A paper titled 'We Ran a Research Sprint With AI. The AI Worked. The Research Didn't' reports a small pilot: a 100-minute sprint with twelve researchers in three teams. The authors argue personal AI tools can create a 'consumption bottleneck', where generation outpaces team-visible evaluation, and 'AI-induced research silos'. They propose a 'Human-AI-Human' model and note the pilot does not isolate AI-specific effects from time pressure.",
+      "why_it_matters": "A useful caution for any creative or newsroom team rolling out AI tools: individual speed gains don't automatically mean better collective output.",
+      "crossover": ["media"],
+      "kind": "research",
+      "confidence": "medium"
+    }
+  ]
+}
