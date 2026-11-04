@@ -6,6 +6,16 @@ has it independently checked, and publishes it. Work in `morning-brief/` of the
 
 Today's date is `D` (YYYY-MM-DD, from `date -u +%F`). Episode folder: `episodes/D/`.
 
+## Lessons from the pilot (2026-11-04)
+- WebFetch and curl to news sites fail in this container. All research and fact-checking go
+  through WebSearch, so mark confidence "medium" unless the full text was readable.
+- In the pilot, the desks found no stories on sustainable production, music or film-sustainability
+  dated within 48h. Search those specifically; the albert, Green Production Guide and Ad Net Zero
+  news pages are in `config/sources.json`.
+- Midterm and election-night results are projections. Say "projected".
+- Start `build_episode.py` as soon as a script draft exists. The per-line cache means
+  fact-check edits only re-synthesize the lines that changed. A full build is ~10 min on 4 CPUs.
+
 ## 0. Setup (in parallel with step 1)
 `bash pipeline/setup_tts.sh` — pulls the offline voice model from npm (~110 MB, ~1 min).
 
@@ -37,7 +47,9 @@ Add `"tagline"`.
 ## 4. Fact-check agent (independent; it does not write the script)
 Checks every story against its source (WebSearch the headline and URL) and checks every
 script line against the stories files. It writes `episodes/D/qa-report.md` with PASS / FIX items.
-The producer fixes every FIX item. If more than 2 stories fail verification, drop them and
+The fact-checker ends its report with a "must not say" list, and the producer checks every
+script line against it. The producer fixes every FIX item by changing only the lines affected,
+so the audio cache is reused. Fact-checking can run in parallel with script writing. If more than 2 stories fail verification, drop them and
 re-run step 3 for the affected sections.
 
 ## 5. Build and validate

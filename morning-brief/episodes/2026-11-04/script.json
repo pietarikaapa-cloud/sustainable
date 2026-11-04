@@ -57,7 +57,7 @@
     },
     {
       "speaker": "A",
-      "text": "Let's stay on that market move. CNBC had CoreWeave down about seven percent overnight, and its live coverage separately reported Democrats winning big in the midterms, with traders betting that could slow the data center buildout.",
+      "text": "Let's stay on that market move. CNBC had CoreWeave down about seven percent overnight, and its live coverage separately reported projected Democratic gains in the midterms, with traders betting that could slow the data center buildout.",
       "story_id": null,
       "section": "ai"
     },
@@ -225,7 +225,7 @@
     },
     {
       "speaker": "B",
-      "text": "Right, it's non-binding. The case was brought by the Hungarian publisher Like Company against Google. And here's the interesting split. He said E U law allows AI training on protected articles, under the text and data mining exception, but treated the chatbot's answers as a separate copyright question.",
+      "text": "Right, it's non-binding. The case was brought by the Hungarian publisher Like Company against Google. And here's the interesting split. He signalled that AI training on protected articles is generally covered by the E U's text and data mining exception, but treated the chatbot's answers as a separate copyright question.",
       "story_id": null,
       "section": "media"
     },
@@ -285,7 +285,7 @@
     },
     {
       "speaker": "B",
-      "text": "To sustainability, and back to the midterms through a climate lens. Inside Climate News reports Democrats won control of both houses of Congress and a majority of governorships in the November third elections.",
+      "text": "To sustainability, and back to the midterms through a climate lens. Inside Climate News reports Democrats are projected to win both houses of Congress and a majority of governorships in the November third elections, with some races still being counted.",
       "story_id": "sus-1",
       "section": "sustainability"
     },
