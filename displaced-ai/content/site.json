@@ -1,0 +1,53 @@
+{
+  "site": {
+    "title": "Displaced AI",
+    "kicker": "An ongoing project",
+    "headline": "Who gets <em>displaced</em> when the work moves to machines?",
+    "tagline": "Articles, video and sources on the people, jobs and communities being reshaped by artificial intelligence.",
+    "about": "content/about.md",
+    "footer": "Displaced AI · An independent project"
+  },
+  "articles": [
+    {
+      "slug": "why-this-project",
+      "title": "Why this project exists",
+      "date": "2026-11-04",
+      "author": "Displaced AI",
+      "summary": "The starting question, what this site will collect, and how you can follow along.",
+      "tags": ["Introduction"],
+      "file": "content/articles/why-this-project.md"
+    },
+    {
+      "slug": "how-to-publish",
+      "title": "How to add articles, videos and links",
+      "date": "2026-11-03",
+      "author": "Displaced AI",
+      "summary": "A step-by-step guide to updating this site from the GitHub website, with no coding tools needed.",
+      "tags": ["Guide"],
+      "file": "content/articles/how-to-publish.md"
+    }
+  ],
+  "videos": [
+    {
+      "title": "Your first video goes here",
+      "date": "2026-11-04",
+      "description": "Paste a YouTube or Vimeo link into this entry's \"youtube\" or \"vimeo\" field in content/site.json, or upload an .mp4 to the videos folder and set \"file\".",
+      "youtube": "",
+      "example": true
+    },
+    {
+      "title": "Interview placeholder",
+      "date": "2026-11-01",
+      "description": "Use one entry per video. Delete these two example entries once your own are in.",
+      "vimeo": "",
+      "example": true
+    }
+  ],
+  "links": [
+    { "group": "Research", "title": "OECD.AI Policy Observatory", "url": "https://oecd.ai/", "note": "Data and policy tracking on AI across countries." },
+    { "group": "Research", "title": "Stanford AI Index", "url": "https://aiindex.stanford.edu/", "note": "Annual report on AI progress, including labour-market data." },
+    { "group": "Research", "title": "International Labour Organization", "url": "https://www.ilo.org/", "note": "Global research on work, employment and technology." },
+    { "group": "Organisations", "title": "Partnership on AI", "url": "https://partnershiponai.org/", "note": "Multi-stakeholder work on AI and shared prosperity." },
+    { "group": "Organisations", "title": "AI Now Institute", "url": "https://ainowinstitute.org/", "note": "Policy research on the social effects of AI." }
+  ]
+}
