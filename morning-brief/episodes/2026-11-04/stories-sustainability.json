@@ -1,0 +1,102 @@
+{
+  "desk": "sustainability",
+  "date": "2026-11-04",
+  "stories": [
+    {
+      "id": "sus-1",
+      "headline": "Democrats win Congress in midterms shaped by energy costs and data centres",
+      "source": "Inside Climate News",
+      "url": "https://insideclimatenews.org/news/04112026/democrats-seize-congress-statehouses-in-referendum-on-the-economy/",
+      "published": "2026-11-04",
+      "summary": "Inside Climate News reports that Democrats won control of both houses of Congress and a majority of governorships in the 3 November US midterms. It frames the vote as a referendum on the economy, with voters seeking action on energy costs, corruption and data centres, and says environmentalists believe the result sets the stage for renewed climate policy. It notes Rep. Kathy Castor has been leading work on an economy-and-environment legislative agenda for the new Congress.",
+      "why_it_matters": "Data-centre backlash and power bills became campaign issues, a sign that AI's energy footprint now carries political weight in the US. The new Congress could reopen federal climate and energy policy.",
+      "crossover": ["ai"],
+      "kind": "policy",
+      "confidence": "medium"
+    },
+    {
+      "id": "sus-2",
+      "headline": "COP31 opens in Antalya next Monday; electrification pledge due 10 November",
+      "source": "Climate Home News",
+      "url": "https://www.climatechangenews.com/2026/11/02/whats-on-the-climate-calendar-for-november-2026/",
+      "published": "2026-11-02",
+      "summary": "Climate Home News' November climate calendar previews the COP31 UN climate summit, which runs 9–20 November in Antalya, Türkiye. Türkiye hosts and Australia leads the negotiations. The calendar says the Turkish presidency is expected to formally launch its flagship electrification pledge on Energy Day, 10 November, and reveal which countries have signed up, and that the opening plenary is on 9 November.",
+      "why_it_matters": "The talks start in five days, with a world leaders' summit on 11–12 November. Electrification sits at the centre of the agenda, which ties the summit directly to the debate over power demand from AI.",
+      "crossover": [],
+      "kind": "policy",
+      "confidence": "medium"
+    },
+    {
+      "id": "sus-3",
+      "headline": "China bets on renewables to power its AI data centres",
+      "source": "Inside Climate News",
+      "url": "https://insideclimatenews.org/news/02112026/china-renewable-energy-data-centers/",
+      "published": "2026-11-02",
+      "summary": "Inside Climate News reports that China plans to use its renewable energy sector to compete in building AI data centres, a different path from the US. It is targeting renewables for more than 80 percent of the electricity used by new data centres in its major computing hubs. Its 'East Data, West Computing' initiative, launched in 2022, steers computing infrastructure toward western regions with abundant renewable resources. The article leaves open whether clean power can keep pace with China's computing ambitions.",
+      "why_it_matters": "China and the US are taking opposite approaches to powering AI, renewables-led versus heavily gas-backed. That split will help decide how large AI's carbon footprint becomes.",
+      "crossover": ["ai"],
+      "kind": "news",
+      "confidence": "medium"
+    },
+    {
+      "id": "sus-4",
+      "headline": "EPA abandons 20-year effort to monitor factory-farm air pollution",
+      "source": "Inside Climate News",
+      "url": "https://insideclimatenews.org/news/03112026/epa-suspends-livestock-methane-monitoring-efforts/",
+      "published": "2026-11-03",
+      "summary": "The US EPA says it will not finalise the air-emissions estimating methods from its 2005 compliance agreement with animal feeding operations, and it will move to terminate the agreement. It says the data from that era are too old and limited to be reliable. Coverage says about 14,000 farms connected to roughly 2,600 operations will be notified. Dairy and pork groups welcomed the decision, while critics say factory-farm air emissions are now likely to go unmeasured; the agreement did not cover methane.",
+      "why_it_matters": "This is another US rollback of environmental monitoring, and it leaves a gap in emissions data for one of the largest sources of agricultural pollution.",
+      "crossover": [],
+      "kind": "policy",
+      "confidence": "medium"
+    },
+    {
+      "id": "sus-5",
+      "headline": "Study: US buildings lost to wildfire could nearly triple by 2060",
+      "source": "Inside Climate News",
+      "url": "https://insideclimatenews.org/news/03112026/wildfire-building-damage-could-triple-by-2060/",
+      "published": "2026-11-03",
+      "summary": "A study in Nature Communications led by University of Colorado Boulder researchers projects that, without new protections, between about 133,000 and 449,000 US buildings (an average of roughly 300,000) could burn by mid-century, nearly triple current levels. The highest risk in 2051–2060 is concentrated in socioeconomically vulnerable communities, and under some scenarios risk rises sharply in the central and eastern US. The researchers point to fire-resistant construction, debris removal and fuel management as affordable ways to cut risk.",
+      "why_it_matters": "This is a concrete forecast of climate-driven property losses with insurance and housing implications well beyond the US West.",
+      "crossover": [],
+      "kind": "research",
+      "confidence": "medium"
+    },
+    {
+      "id": "sus-6",
+      "headline": "Report: GWP* 'bookkeeping trick' could hide beef's methane footprint",
+      "source": "Inside Climate News",
+      "url": "https://insideclimatenews.org/news/02112026/beef-climate-impacts-accuracy/",
+      "published": "2026-11-02",
+      "summary": "Inside Climate News covers a Greenpeace-commissioned report, published 29 October with Cerulogy modelling. It finds the top 10 livestock-exporting countries, including Brazil and the US, could report a 30 percent methane cut by 2030 under the GWP* metric while actual cuts are only about 0.6 percent. Separate UCLA analysis found livestock foods, especially beef, show much higher emissions under GWP20 than GWP100. GWP* defenders say the science behind it is legitimate.",
+      "why_it_matters": "Which metric counts methane is a live fight ahead of COP31. It decides how much of the methane reductions countries and food companies report actually happen.",
+      "crossover": [],
+      "kind": "research",
+      "confidence": "medium"
+    },
+    {
+      "id": "sus-7",
+      "headline": "Green jobs are more resilient to AI than most work, UK report finds",
+      "source": "Trellis",
+      "url": "https://trellis.net/article/why-green-jobs-are-resilient-to-ai-substitution/",
+      "published": "2026-11-02",
+      "summary": "Trellis covers 'Green Advantage: Employment in an AI-Enabled Economy', a UK report commissioned by Futerra, the Energy and Climate Intelligence Unit and CBI Economics. It finds that 82 percent of green jobs have lower AI substitution potential, against around three in four jobs across the UK workforce, and that 96 percent of green apprenticeships in England lead to jobs harder for AI to replace, against 73 percent overall. The piece flags that corporate sustainability practitioner roles, which are heavy on research and reporting, carry more risk.",
+      "why_it_matters": "It argues hands-on climate trades hold up well against automation, while desk-based ESG reporting roles are among those most exposed to AI.",
+      "crossover": ["ai"],
+      "kind": "research",
+      "confidence": "medium"
+    },
+    {
+      "id": "sus-8",
+      "headline": "Canada and EU deepen cooperation on energy and cleantech supply chains",
+      "source": "Climate Home News",
+      "url": "https://www.climatechangenews.com/2026/11/03/canada-eu-agree-deeper-cooperation-on-energy-and-cleantech-supply-chains/",
+      "published": "2026-11-03",
+      "summary": "Climate Home News reports on the outcome of the Canada–EU summit, where leaders launched an 'Alliance for the Future'. The alliance commits to closer work on critical minerals, green electricity grids, storage and energy-infrastructure protection, backed by a European Investment Bank framework for Canadian critical raw materials. The sides also agreed a joint study on exporting liquefied natural gas to Europe. Climate groups welcomed the EIB move but highlighted a gap between commitments and clear next steps.",
+      "why_it_matters": "Western allies are trying to build cleantech supply chains that rely less on China, though LNG remains part of the deal.",
+      "crossover": [],
+      "kind": "policy",
+      "confidence": "medium"
+    }
+  ]
+}
