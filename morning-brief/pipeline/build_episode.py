@@ -275,6 +275,14 @@ def main():
         t_enc = time.time()
         in_lufs = loudnorm_encode(wav, mp3 + ".tmp.mp3", meta)
         os.replace(mp3 + ".tmp.mp3", mp3)
+        # Audio-only MP4 (AAC) copy for downloading: the claude.ai artifact viewer only
+        # lets pages save allow-listed types (mp4 yes, mp3 no); phones play it as audio.
+        m4 = os.path.join(ep, "episode.mp4")
+        subprocess.run(["ffmpeg", "-hide_banner", "-loglevel", "error", "-y", "-i", mp3,
+                        "-vn", "-c:a", "aac", "-b:a", "64k", "-ac", "1",
+                        "-metadata", f"title={meta['title']}", "-metadata", "artist=Morning Signal",
+                        "-movflags", "+faststart", m4 + ".tmp.mp4"], check=True)
+        os.replace(m4 + ".tmp.mp4", m4)
         t_enc = time.time() - t_enc
     duration = round(probe_duration(mp3), 2)
 
@@ -297,6 +305,7 @@ def main():
         "title": script.get("title", f"Morning Signal — {date}"),
         "tagline": script.get("tagline") or intro,
         "audio": "episode.mp3",
+        "download": "episode.mp4",
         "duration_sec": duration,
         "hosts": hosts,
         "sections": sections,

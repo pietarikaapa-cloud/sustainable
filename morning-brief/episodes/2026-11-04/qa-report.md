@@ -62,3 +62,36 @@ All three JSON files validate. Note: the files were re-serialised with 2-space i
 - "Game industry has cut 11,000 jobs" as fact. Attribute it to the Seoul Economic Daily, or omit it.
 - That UCLA researchers backed the Greenpeace GWP* critique.
 - That the COP31 electrification pledge commits countries to clean power. It does not.
+
+## App QA
+
+Independent QA of `app/index.html` (Morning Signal player) against the 2026-11-04 episode. Tested in Playwright Chromium with iPhone 13 and Pixel 7 emulation, in light and dark mode. The site used the published layout (`index.html` at the root, `episodes/` beside it) and was served by `http-server`, which supports HTTP Range. A second server that ignores Range (`python -m http.server`) was used for the fallback path. Final run: 157/157 automated checks pass.
+
+| # | Check | Result |
+|---|---|---|
+| 1 | Loads "Power on the Ballot" with "Wednesday, November 4 · 14 min" and masthead "Wed, Nov 4". Audio is 868.4 s (-14:28). No console or page errors. No horizontal overflow at 390 px or 412 px. | PASS |
+| 2 | Play advances time and the label flips to "Pause episode". Pause holds the position. +30 and -15 land within 1 s of the target. Speed 1.5× sets playbackRate and aria-pressed. | PASS |
+| 3 | Listen for all 24 timed stories (ai, media and sustainability) lands within 1 s of start_sec, plays, and puts the right card On air (one card only). media-7 (start_sec null) has no Listen chip. The mini player appears once the hero scrolls away. | PASS |
+| 4 | All 25 Read article hrefs equal the episode.json urls, with target=_blank and rel=noopener. A real tap opens a new tab at the article URL. | PASS |
+| 5 | Transcript toggles open with 89 lines. Speakers are Max and Nova (Nova styled as host B). Tapping lines 10, 47 and 80 seeks to their start and highlights the line. | PASS |
+| 6 | Each headline, summary, why-it-matters and source renders exactly as in the JSON, with no clipping. No "undefined", "null", "NaN" or "[object Object]" in visible text. | PASS |
+| 7 | All buttons and links have accessible names. Tap targets are at least 44 px. Speed buttons were 40 px tall before the fix. | PASS (after fix) |
+| 8 | First contentful paint is about 440–460 ms and the hero renders in about 550 ms (local). Before play, only 64–786 KB of the 6.9 MB MP3 had arrived, all via 206 range responses. A far seek opens a new range request instead of downloading the whole file. | PASS |
+| 9 | Extra: tapping +30 four times in quickly (with network latency) on a Range-capable host. | PASS (after fix) |
+| 10 | Extra: on a host that ignores Range, Listen on sus-8 loads the whole file once, then plays at 850 s with sus-8 On air. | PASS (after fix) |
+| 11 | Extra: the saved position survives a reload (resumed at 5:49 with media-3 On air). Scrubbing to 50% lands at 7:14. Space toggles play. | PASS |
+
+### Bugs found and fixed in `app/index.html`
+1. **Rapid skip taps downloaded the whole MP3 (functional and data cost).** `verifySeek` used a one-shot `seeked` listener for each seek. When two seeks overlapped, the first listener compared the final position to its own, older target. It then decided the host could not seek, so it fetched the full 7 MB file and switched to a blob, which also landed at the wrong time (94.7 s instead of about 121 s). **Fix:** a seek-generation counter. Only the latest seek is verified, and only once `audio.seeking` is false.
+2. **The no-Range fallback never finished (functional).** On a host that ignores Range, `fetch(src)` waited forever on Chrome's HTTP-cache lock, because the `<audio>` element was still writing the same URL. Jumps such as Listen or transcript taps sat at 0:00 showing "Loading the full episode…". **Fix:** `fetch(src, { cache: "no-store" })`.
+3. **Speed buttons were 40 px tall (accessibility).** Changed `min-height` to 44 px.
+4. **Transcript lines were unreadable to screen readers (accessibility).** Each line's `aria-label="Play from m:ss, Speaker"` replaced the spoken text. **Fix:** removed the aria-label and added a visually hidden "Play from" before the timestamp, so screen readers now read the time, the speaker and the text.
+5. **`aria-live="polite"` was on all of `<main>` (accessibility).** Every render announced the whole page, and every story change announced "Now: …". **Fix:** removed it, and added `role="status"` only on the loading and error state blocks.
+6. **Listen chips had identical names (accessibility).** They are now named "Listen from m:ss: <headline>".
+7. **The `:hover` tint stuck after a tap on touch screens (visual).** It looked identical to the "live line" highlight, so two lines appeared active. **Fix:** hover is wrapped in `@media (hover: hover)`.
+
+### Notes (not changed)
+- ai-1's start_sec is 1.2 (the cold open). Listen for ai-1 therefore starts the episode from the top, which is acceptable.
+- Not tested: iOS Safari's own media stack (Playwright WebKit is not iOS), and background audio or lock-screen controls on a real device.
+
+Screenshots are in `/tmp/claude-0/qa-shots/`: `*-top.png` (light and dark), `*-onair-card.png` and `*-onair-viewport.png`, and `*-transcript.png`.

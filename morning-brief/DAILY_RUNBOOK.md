@@ -70,6 +70,6 @@ and loudness. If anything is off, send it back to the responsible agent and repe
 - Commit `episodes/D/` (not `.cache/`) and any registry changes, then push to the working branch.
 - Republish the phone app Artifact (URL in `PUBLISHING.md`), mapping `index.html` from
   `app/index.html` and adding the new files under `files`:
-  `episodes/index.json` plus `episodes/D/episode.json` and `episodes/D/episode.mp3`. Older
+  `episodes/index.json` plus `episodes/D/episode.json`, `episodes/D/episode.mp3` and `episodes/D/episode.mp4`. Older
   episodes are already in the artifact and stay there.
 - Finish with a 5-line summary: title, duration, story count per desk, QA verdict, link.

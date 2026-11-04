@@ -144,7 +144,7 @@ h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; }
 .tools { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; border-top: 1px solid var(--rule); padding-top: 14px; }
 .speeds { display: flex; border: 1px solid var(--rule); border-radius: 999px; padding: 2px; }
 .speeds button {
-  appearance: none; border: 0; background: transparent; cursor: pointer; min-width: 48px; min-height: 40px;
+  appearance: none; border: 0; background: transparent; cursor: pointer; min-width: 48px; min-height: 44px;
   border-radius: 999px; font: 500 .8125rem/1 var(--f-mono); color: var(--muted);
 }
 .speeds button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
@@ -207,7 +207,7 @@ h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; }
   appearance: none; border: 0; background: transparent; cursor: pointer; width: 100%; text-align: left;
   display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 10px; padding: 10px 8px; border-radius: 10px; min-height: 44px;
 }
-.line:hover { background: var(--tint); }
+@media (hover: hover) { .line:hover { background: var(--tint); } }
 .line.is-live { background: var(--tint); }
 .line .t { font: 400 .75rem/1.9 var(--f-mono); font-variant-numeric: tabular-nums; color: var(--muted); }
 .line .who { display: block; font: 500 .75rem/1.6 var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
@@ -276,8 +276,8 @@ footer { color: var(--muted); font-size: .875rem; padding-top: 8px; }
     <div class="eyebrow" id="mast-date">AI · Media · Sustainability</div>
   </header>
 
-  <main id="main" aria-live="polite">
-    <div class="state" id="loading">
+  <main id="main">
+    <div class="state" id="loading" role="status">
       <div class="skeleton" style="width:100%" aria-hidden="true"><i></i><i></i><i></i></div>
       <p>Tuning in to this morning’s briefing…</p>
     </div>
@@ -359,11 +359,11 @@ footer { color: var(--muted); font-size: .875rem; padding-top: 8px; }
 
   /* ---------- states ---------- */
   function showState(title, msg, retry) {
-    main.innerHTML = `<div class="state"><h2>${esc(title)}</h2><p>${esc(msg)}</p>${retry ? '<button class="btn-text" type="button" id="retry">Try again</button>' : ""}</div>`;
+    main.innerHTML = `<div class="state" role="status"><h2>${esc(title)}</h2><p>${esc(msg)}</p>${retry ? '<button class="btn-text" type="button" id="retry">Try again</button>' : ""}</div>`;
     if (retry) $("#retry").addEventListener("click", retry);
   }
   function showLoading(msg) {
-    main.innerHTML = `<div class="state"><div class="skeleton" style="width:100%" aria-hidden="true"><i></i><i></i><i></i></div><p>${esc(msg)}</p></div>`;
+    main.innerHTML = `<div class="state" role="status"><div class="skeleton" style="width:100%" aria-hidden="true"><i></i><i></i><i></i></div><p>${esc(msg)}</p></div>`;
   }
 
   async function getJSON(url) {
@@ -464,7 +464,7 @@ footer { color: var(--muted); font-size: .875rem; padding-top: 8px; }
         <div class="speeds" role="group" aria-label="Playback speed">
           ${SPEEDS.map(s => `<button type="button" data-speed="${s}" aria-pressed="false" aria-label="${s} times speed">${s}×</button>`).join("")}
         </div>
-        <a class="dl" id="dl" href="${esc(audioUrl)}" download="morning-signal-${esc(ep.date)}.mp3">${ICON.dl}Download MP3</a>
+        <a class="dl" id="dl" href="${esc(audioUrl)}" download="morning-signal-${esc(ep.date)}.mp3" data-dl="${ep.download ? esc(epBase + ep.download) : ""}" data-name="morning-signal-${esc(ep.date)}.mp4">${ICON.dl}<span class="dl-label">Download episode</span></a>
       </div>
     </section>`;
 
@@ -489,8 +489,8 @@ footer { color: var(--muted); font-size: .875rem; padding-top: 8px; }
           <h2>Transcript</h2><span style="display:flex;align-items:center;gap:8px"><span class="eyebrow" id="tr-hint">Show</span>${ICON.chev}</span>
         </button>
         <ol class="transcript" id="transcript" hidden>
-          ${tr.map((l, i) => `<li><button class="line${hostB && l.speaker === hostB ? " b" : ""}" type="button" data-i="${i}" data-t="${+l.start_sec || 0}" aria-label="Play from ${fmt(+l.start_sec || 0)}, ${esc(l.speaker)}">
-            <span class="t">${fmt(+l.start_sec || 0)}</span>
+          ${tr.map((l, i) => `<li><button class="line${hostB && l.speaker === hostB ? " b" : ""}" type="button" data-i="${i}" data-t="${+l.start_sec || 0}">
+            <span class="t"><span class="sr">Play from </span>${fmt(+l.start_sec || 0)}</span>
             <span><span class="who">${esc(l.speaker)}</span><span class="say">${esc(l.text)}</span></span>
           </button></li>`).join("")}
         </ol>
@@ -515,7 +515,7 @@ footer { color: var(--muted); font-size: .875rem; padding-top: 8px; }
       ${st.why_it_matters ? `<p class="why"><b>Why it matters</b>${esc(st.why_it_matters)}</p>` : ""}
       ${tags.length ? `<div class="tags" aria-label="Also relevant to">${tags.map(t => `<span class="tag ${esc(t)}">${esc(deskName(t))}</span>`).join("")}</div>` : ""}
       <div class="actions">
-        ${hasStart ? `<button class="chip listen" type="button" data-seek="${st.start_sec}" aria-label="Listen to this story, from ${fmt(st.start_sec)}">▶ Listen <span class="mono">${fmt(st.start_sec)}</span></button>` : ""}
+        ${hasStart ? `<button class="chip listen" type="button" data-seek="${st.start_sec}" aria-label="Listen from ${fmt(st.start_sec)}: ${esc(st.headline)}">▶ Listen <span class="mono">${fmt(st.start_sec)}</span></button>` : ""}
         ${url ? `<a class="chip read" href="${esc(url)}" target="_blank" rel="noopener">Read article ↗<span class="sr"> (opens ${esc(st.source || "source")} in a new tab)</span></a>` : ""}
       </div>
     </li>`;
@@ -626,11 +626,17 @@ footer { color: var(--muted); font-size: .875rem; padding-top: 8px; }
   }
   /* Some static hosts ignore HTTP Range requests, so the browser can't jump ahead in the stream.
      If a seek doesn't land, fetch the whole MP3 once and play it from memory. */
+  let seekGen = 0;
   function verifySeek(t, andPlay) {
+    const gen = ++seekGen;  // a newer seek supersedes this check (rapid skip taps)
     if (String(audio.currentSrc).startsWith("blob:") || t < 2) return;
-    audio.addEventListener("seeked", () => {
+    const chk = () => {
+      if (gen !== seekGen) { audio.removeEventListener("seeked", chk); return; }
+      if (audio.seeking) return;
+      audio.removeEventListener("seeked", chk);
       if (Math.abs(audio.currentTime - t) > 2) loadWhole(t, andPlay || !audio.paused);
-    }, { once: true });
+    };
+    audio.addEventListener("seeked", chk);
   }
   let wholeJob = null, blobUrl = null;
   function loadWhole(t, andPlay) {
@@ -638,7 +644,7 @@ footer { color: var(--muted); font-size: .875rem; padding-top: 8px; }
     if (wholeJob) return;
     const src = audio.currentSrc || audio.src, date = ep && ep.date;
     flashNow("Loading the full episode so you can jump around…");
-    wholeJob = fetch(src).then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.blob(); }).then(b => {
+    wholeJob = fetch(src, { cache: "no-store" }).then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.blob(); }).then(b => {
       if (!ep || ep.date !== date) return;
       if (blobUrl) URL.revokeObjectURL(blobUrl);
       blobUrl = URL.createObjectURL(b);
@@ -803,5 +809,36 @@ footer { color: var(--muted); font-size: .875rem; padding-top: 8px; }
   });
 
   boot();
+})();
+
+/* Download: inside the claude.ai viewer, plain download links are blocked, so save the
+   audio-only MP4 through the `downloads` capability. Elsewhere the <a download> MP3 link works. */
+(function () {
+  let dlApi = null;
+  (async () => {
+    try { if (window.claude && typeof window.claude.use === "function") dlApi = await window.claude.use("downloads"); }
+    catch (e) { dlApi = null; }
+  })();
+  document.addEventListener("click", async (e) => {
+    const a = e.target && e.target.closest ? e.target.closest("#dl") : null;
+    if (!a || !dlApi || !a.dataset.dl) return;
+    e.preventDefault();
+    const label = a.querySelector(".dl-label");
+    const old = label ? label.textContent : "";
+    const say = (t) => { if (label) label.textContent = t; };
+    try {
+      say("Preparing…");
+      const r = await fetch(a.dataset.dl);
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      const blob = await r.blob();
+      say("Confirm to save…");
+      await dlApi.save({ filename: a.dataset.name, data: blob });
+      say("Saved ✓");
+    } catch (err) {
+      say(err && err.code === "declined" ? old : "Download unavailable here");
+    } finally {
+      setTimeout(() => say(old), 2500);
+    }
+  });
 })();
 </script>
