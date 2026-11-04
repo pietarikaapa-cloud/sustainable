@@ -1,0 +1,90 @@
+{
+  "desk": "media",
+  "date": "2026-11-04",
+  "stories": [
+    {
+      "id": "media-1",
+      "headline": "New York Times and Tribune papers sue Brave over AI scraping",
+      "source": "TheWrap",
+      "url": "https://www.thewrap.com/industry-news/tech/new-york-times-chicago-tribune-brave-ai-copyright-lawsuit/",
+      "published": "2026-11-02",
+      "summary": "The New York Times sued Brave Software in federal court in Manhattan, and the Daily News, Chicago Tribune and Orlando Sentinel filed a separate complaint the same day. The suits allege Brave built a search index of more than 30 billion pages with a crawler sites cannot detect or block, let users get around paywalls, and sold access to the content to AI developers. The Times names Anthropic, Perplexity, Mistral, xAI and Cohere among Brave's customers and says Brave ignored cease-and-desist letters sent in August 2025 and April 2026. These are allegations; no response from Brave was reported.",
+      "why_it_matters": "Publishers are now going after the data middlemen that feed AI models, not just the model makers. That widens the legal risk for any company that buys search or crawl data.",
+      "crossover": ["ai"],
+      "kind": "news",
+      "confidence": "medium"
+    },
+    {
+      "id": "media-2",
+      "headline": "EU court adviser says Google's Gemini may infringe publishers' rights",
+      "source": "Dataconomy",
+      "url": "https://dataconomy.com/2026/11/03/eu-court-adviser-says-google-gemini-may-infringe-press/",
+      "published": "2026-11-03",
+      "summary": "In a non-binding opinion in case C-250/25, brought by the Hungarian publisher Like Company against Google, Advocate General Maciej Szpunar said Gemini may infringe the EU press publishers' right when it retrieves news articles and reuses them in its answers. He said EU law allows AI training on protected articles under the text-and-data-mining exception, but treated chatbot outputs as a separate copyright question. Google said the opinion recognised that EU law allows AI training on publicly available information. The Court of Justice usually follows these opinions, and its ruling is expected in the coming months.",
+      "why_it_matters": "If the court agrees, publishers' leverage moves from training data to AI answers, the point where chatbots compete with news sites for readers.",
+      "crossover": ["ai"],
+      "kind": "policy",
+      "confidence": "medium"
+    },
+    {
+      "id": "media-3",
+      "headline": "Hollywood talent groups back New York Times against OpenAI",
+      "source": "Axios",
+      "url": "https://axios.com/2026/11/03/hollywood-new-york-times-openai-microsoft",
+      "published": "2026-11-03",
+      "summary": "Creative-industry groups have filed amicus briefs supporting the New York Times in its copyright case against OpenAI and Microsoft. The Human Consent Foundation, a nonprofit co-founded by Cate Blanchett, filed a brief disputing claims that licensing works for AI training is impractical. Co-signers included CAA and the Music Artists Coalition, and Anne Hathaway, Bette Midler and Madonna voiced support. In a separate brief, WME said its position 'is not that AI use of creative materials should be stopped, but that it should be licensed.' The briefs were filed around October 29–30; Axios reported the coalition on November 3.",
+      "why_it_matters": "The major agencies now argue in court for licensing rather than bans. That supports a paid market for training data in film, TV and music.",
+      "crossover": ["ai"],
+      "kind": "policy",
+      "confidence": "medium"
+    },
+    {
+      "id": "media-4",
+      "headline": "Netflix tests 'AI Discover', a mood-based recommendations tab for TVs",
+      "source": "Deadline",
+      "url": "https://deadline.com/2026/11/netflix-ai-discovery-tool-viewers-programming-1237212413/",
+      "published": "2026-11-03",
+      "summary": "Netflix has started testing a new TV-app tab called AI Discover. Viewers choose a mood or theme and get a curated set of titles, each theme previewed with a clip. The test is limited to a small group of US members using Netflix in English on supported TVs, and Netflix calls it a 'test kitchen' whose features may later reach the main service. Reports say this first version has no chat box, and Netflix has not said which AI models power it.",
+      "why_it_matters": "Streamers are turning generative AI on discovery as well as production. How viewers find content shapes which shows succeed.",
+      "crossover": ["ai"],
+      "kind": "launch",
+      "confidence": "medium"
+    },
+    {
+      "id": "media-5",
+      "headline": "Newsom proposes raising California film and TV tax credit to $1 billion",
+      "source": "Office of the Governor of California",
+      "url": "https://www.gov.ca.gov/2026/11/02/governor-newsom-proposes-historic-1-billion-california-film-and-television-tax-credit-building-on-the-nations-most-generous-capped-credit/",
+      "published": "2026-11-02",
+      "summary": "Governor Gavin Newsom proposed raising California's annual film and TV tax credit from $750 million to at least $1 billion and extending the program to 2040. Coverage of the proposal says it would add a 5% credit bump for companies committing to multiple California productions, set aside $100 million for independent productions, and cover above-the-line costs. Newsom also urged Congress to pass a national production tax credit. It is a proposal and still needs legislative approval.",
+      "why_it_matters": "Reports note that local production keeps falling despite last year's increase. The move escalates the incentive race over where film and TV get made.",
+      "crossover": [],
+      "kind": "policy",
+      "confidence": "medium"
+    },
+    {
+      "id": "media-6",
+      "headline": "Publicis closes $2.2bn LiveRamp deal and launches an 'AI growth engine'",
+      "source": "Campaign",
+      "url": "https://www.campaignlive.com/article/publicis-says-omnicom-wpp-welcome-use-liveramp-takeover-completes/1974109",
+      "published": "2026-11-03",
+      "summary": "Publicis Groupe completed its $2.2 billion acquisition of the data company LiveRamp on November 2, after CFIUS cleared the deal. The FTC had earlier approved it with conditions, including five years of continued access to LiveRamp's products for rival agencies. Publicis also launched an AI 'growth engine' that combines LiveRamp with Epsilon's identity tools. CEO Arthur Sadoun said Omnicom and WPP, which had questioned LiveRamp's independence, remain 'very welcome' to use it.",
+      "why_it_matters": "Holding companies are using data and AI tooling as their main competitive moat. Rivals' dependence on a Publicis-owned data hub will be a test case.",
+      "crossover": ["ai"],
+      "kind": "deal",
+      "confidence": "medium"
+    },
+    {
+      "id": "media-7",
+      "headline": "Game industry job cuts pass 11,000 as studios hire for AI skills",
+      "source": "Seoul Economic Daily",
+      "url": "https://en.sedaily.com/technology/2026/11/04/game-industry-cuts-11000-jobs-while-hiring-ai-savvy-recruits",
+      "published": "2026-11-04",
+      "summary": "Global game-industry layoffs this year have reached about 11,000, per the report, while Korean publishers recruit for AI skills. Krafton has launched an internship of more than 100 positions that evaluates AI proficiency, and Nexon has replaced its coding test with AI interviews and competency assessments. The report notes the job cuts cannot be attributed solely to AI adoption.",
+      "why_it_matters": "Games show the AI-era workforce shift most clearly: cutting existing staff while hiring for AI fluency. Other creative industries may follow the same pattern.",
+      "crossover": ["ai"],
+      "kind": "news",
+      "confidence": "medium"
+    }
+  ]
+}
