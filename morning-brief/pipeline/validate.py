@@ -58,14 +58,15 @@ def check_story(rep, where, s, desk=None):
     url = s.get("url")
     if not (isinstance(url, str) and URL_RE.match(url)):
         rep.err(f"{where} {sid}: url not http(s): {url!r}")
-    if desk and isinstance(s.get("id"), str) and not s["id"].startswith(desk + "-"):
-        rep.warn(f"{where} {sid}: id does not start with '{desk}-'")
+    prefix = {"sustainability": "sus"}.get(desk, desk)
+    if desk and isinstance(s.get("id"), str) and not s["id"].startswith(prefix + "-"):
+        rep.warn(f"{where} {sid}: id does not start with '{prefix}-'")
     if s.get("published") and not DATE_RE.match(str(s["published"])):
         rep.warn(f"{where} {sid}: published not YYYY-MM-DD: {s['published']!r}")
     if s.get("kind") and s["kind"] not in KINDS:
         rep.warn(f"{where} {sid}: unknown kind {s['kind']!r}")
-    if s.get("confidence") and s["confidence"] not in ("high", "medium"):
-        rep.warn(f"{where} {sid}: confidence should be high|medium")
+    if s.get("confidence") and s["confidence"] not in ("high", "medium", "low"):
+        rep.warn(f"{where} {sid}: confidence should be high|medium|low")
     cr = s.get("crossover")
     if cr is not None and not (isinstance(cr, list) and all(c in DESKS for c in cr)):
         rep.warn(f"{where} {sid}: crossover should be a list of desks")

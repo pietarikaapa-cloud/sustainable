@@ -49,7 +49,7 @@ morning-brief/
       "why_it_matters": "1–2 sentences for someone working across AI / media / sustainability.",
       "crossover": ["media"],
       "kind": "news|research|deal|policy|launch|opinion",
-      "confidence": "high|medium"
+      "confidence": "high|medium|low"
     }
   ]
 }
